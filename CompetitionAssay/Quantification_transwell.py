@@ -37,6 +37,7 @@ def main():
             WT_img = imread(base_dir + competition + files_are_in + WT_file)
             Mutant_img = imread(base_dir + competition + files_are_in + Mutant_file)
 
+
             # start here the data normalization
             WT_normalized = helpers.NormalizeImg(WT_img)
             Mutant_normalized = helpers.NormalizeImg(Mutant_img)
