@@ -1,2 +1,5 @@
 *.tif
 dataset_*/
+*.h5
+*.pyc
+*.v2
