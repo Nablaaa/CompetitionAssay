@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from skimage.morphology import binary_erosion, binary_dilation, remove_small_objects
 
-from n2v.models import N2V
+# from n2v.models import N2V
 
 from sklearn.ensemble import RandomForestClassifier
 import pickle
@@ -71,7 +71,7 @@ def RandomForestSegmentation(img, modelpath,visualize=False):
     result_1d = loaded_classifier.predict(feature_stack.T) - 1 # subtract 1 to make background = 0
     result_2d = result_1d.reshape(img.shape)
     
-    if visualize = True:
+    if visualize:
         # create a plot with 2 subplots and add the img and the result_2d
         fig, axs = plt.subplots(1, 2, figsize=(10, 10))
         axs[0].imshow(img)
