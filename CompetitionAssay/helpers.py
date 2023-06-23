@@ -10,8 +10,42 @@ import pickle
 from skimage import filters
 
 
-def n2vDenoising(img, visualize=False, pass_it=False):
+def OverlaySegmentation(img, segmentation):
+    import matplotlib.pyplot as plt
+    import numpy as np
 
+    # Create a figure and axis
+    fig, ax = plt.subplots()
+
+    # Plot intensity image
+    ax.imshow(img, cmap="gray", vmin=np.min(img), vmax=2 * np.mean(img))
+
+    # Create a mask for the contour
+    contour_mask_1 = np.zeros_like(segmentation)
+    contour_mask_2 = np.zeros_like(segmentation)
+    contour_mask_1[segmentation == 1] = 1  # Change the value based on your label
+    contour_mask_2[segmentation == 2] = 2  # Change the value based on your label
+
+    # Plot segmentation contour
+    contour_2 = ax.contour(contour_mask_2, colors="red", linewidths=0.4)
+    contour_1 = ax.contour(contour_mask_1, colors="cyan", linewidths=0.5)
+
+    # Customize the contour appearance if needed
+    # For example, you can set the transparency of the contour:
+    contour_1.set_alpha(0.5)
+    contour_2.set_alpha(0.5)
+
+    return fig
+
+
+# pick out a certain label (e.g. when classifier has 2 categories)
+def PickLabel(img, label):
+    img[img != label] = 0
+    img[img == label] = 1
+    return img
+
+
+def n2vDenoising(img, visualize=False, pass_it=False):
     if pass_it:
         return img
 
@@ -64,13 +98,14 @@ def NormalizeImg(img):
 
     return img
 
-def RandomForestSegmentation(img, modelpath,visualize=False):
+
+def RandomForestSegmentation(img, modelpath, visualize=False):
     feature_stack = generate_feature_stack(img)
-    loaded_classifier = pickle.load(open(modelpath, 'rb'))
-    
-    result_1d = loaded_classifier.predict(feature_stack.T) - 1 # subtract 1 to make background = 0
+    loaded_classifier = pickle.load(open(modelpath, "rb"))
+
+    result_1d = loaded_classifier.predict(feature_stack.T) - 1  # subtract 1 to make background = 0
     result_2d = result_1d.reshape(img.shape)
-    
+
     if visualize:
         # create a plot with 2 subplots and add the img and the result_2d
         fig, axs = plt.subplots(1, 2, figsize=(10, 10))
@@ -83,7 +118,6 @@ def RandomForestSegmentation(img, modelpath,visualize=False):
     return result_2d
 
 
-
 def generate_feature_stack(image):
     # determine features
     blurred = filters.gaussian(image, sigma=2)
@@ -92,14 +126,11 @@ def generate_feature_stack(image):
     # collect features in a stack
     # The ravel() function turns a nD image into a 1-D image.
     # We need to use it because scikit-learn expects values in a 1-D format here.
-    feature_stack = [
-        image.ravel(),
-        blurred.ravel(),
-        edges.ravel()
-    ]
+    feature_stack = [image.ravel(), blurred.ravel(), edges.ravel()]
 
     # return stack as numpy-array
     return np.asarray(feature_stack)
+
 
 def format_data(feature_stack, annotation):
     # reformat the data to match what scikit-learn expects
@@ -114,7 +145,6 @@ def format_data(feature_stack, annotation):
     y = y[mask]
 
     return X, y
-
 
 
 def ChangeMorphology(binary_img, N, show=False):
@@ -145,19 +175,70 @@ def ChangeMorphology(binary_img, N, show=False):
     return binary_img
 
 
+def Plot_Area_Histogram(
+    all_single_areas_WT, all_single_areas_Mutant, competition, output_dir, visualize=False
+):
+    plt.figure()
+    hist1, bins1 = np.histogram(all_single_areas_WT, bins=100)
+    hist2, bins2 = np.histogram(all_single_areas_Mutant, bins=100)
+    hist1_log = np.log10(hist1)
+    hist2_log = np.log10(hist2)
+
+    plt.bar(bins1[:-1], hist1_log + 1, width=np.diff(bins1), align="edge", alpha=0.5, label="WT")
+    plt.bar(
+        bins2[:-1], hist2_log + 1, width=np.diff(bins2), align="edge", alpha=0.5, label="Mutant"
+    )
+
+    plt.plot([0, np.max(bins2)], [1, 1], color="black", linestyle="--", linewidth=2, label="1")
+
+    plt.legend()
+    plt.xlabel("Area[px]")
+    plt.ylabel("log10(Count) + 1")
+    plt.title("Histogram of single cell areas")
+    plt.savefig(output_dir + "area_distribution_" + competition[:-1] + ".png", dpi=500)
+    plt.savefig(output_dir + "area_distribution_" + competition[:-1] + ".pdf", dpi=500)
+
+    if visualize:
+        plt.show()
+
+    else:
+        plt.close()
+
+    print("Histogram saved to: " + output_dir + "area_distribution_" + competition[:-1] + ".png")
+
+
+def GetCoveredAreaPercent(binary_img):
+    return np.sum(binary_img) / (binary_img.shape[0] * binary_img.shape[1])
+
+
+def GetSingleCellArea(binary_img):
+    """Get the area of a single cell in a binary image"""
+
+    ChangeMorphology(binary_img, 2, show=False)
+
+    from skimage.measure import label, regionprops
+
+    # label the image
+    labeled_img = label(binary_img)
+
+    # get the area of each object
+    props = regionprops(labeled_img)
+
+    # get all areas
+    areas = [prop.area for prop in props]
+
+    return np.array(areas)
+
+
 def GetTranswellData(base_dir, competition, files_are_in):
     different_assays_folders = [
-        file
-        for file in os.listdir(base_dir + competition + files_are_in)
-        if file.endswith(".tif")
+        file for file in os.listdir(base_dir + competition + files_are_in) if file.endswith(".tif")
     ]
 
     # get all files that start with WT_
     WT_files = [file for file in different_assays_folders if file.startswith("WT_")]
 
-    Mutant_files = [
-        file for file in different_assays_folders if not file.startswith("WT_")
-    ]
+    Mutant_files = [file for file in different_assays_folders if not file.startswith("WT_")]
 
     # sort the files
     WT_files.sort()
