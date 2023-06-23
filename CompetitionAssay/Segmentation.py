@@ -14,29 +14,39 @@ import helpers
 import matplotlib.pyplot as plt
 
 # define base directory
-base_dir = "dataset_competition_assays/competition_2_WTmScarlet_dwspFmNeonGreen/TW_growth/"
+base_dir = "dataset_competition_assays/"
+competition = "competition_2_WTmScarlet_dwspFmNeonGreen/"
+files_are_in = "TW_growth/"
+
+modelpath_WT = "models/RandomForestClassifier_transwell/transwell_denoised_2_categories_WT.pkl"
+modelpath_Mutant = (
+    "models/RandomForestClassifier_transwell/transwell_denoised_2_categories_Mutant.pkl"
+)
 
 # output directory
-output_dir = base_dir + 'binary/'
+output_dir = base_dir + competition + files_are_in + "segmentation/"
 
 # create output directory if it does not exist
 if not os.path.exists(output_dir):
     os.makedirs(output_dir)
-    
 
-modelpath = "models/RandomForestClassifier_transwell/random_forest_classifier_transwell_denoised.pkl"
+# get all filenames
+WT_denoised_files, Mutant_denoised_files = helpers.GetTranswellData(
+    base_dir, competition, files_are_in + "binary/"
+)
 
+for WT_denoised_file, Mutant_denoised_file in zip(WT_denoised_files, Mutant_denoised_files):
+    print(WT_denoised_file)
+    WT_denoised = imread(base_dir + competition + files_are_in + "denoised/" + WT_denoised_file)
+    WT_segmented = helpers.RandomForestSegmentation(WT_denoised, modelpath_WT, visualize=False)
+    imsave(output_dir + WT_denoised_file, WT_segmented)
 
-# get all the files in the directory
-filenames = os.listdir(base_dir + 'denoised/')
+    Mutant_denoised = imread(
+        base_dir + competition + files_are_in + "denoised/" + Mutant_denoised_file
+    )
+    Mutant_segmented = helpers.RandomForestSegmentation(
+        Mutant_denoised, modelpath_Mutant, visualize=False
+    )
+    imsave(output_dir + Mutant_denoised_file, Mutant_segmented)
 
-for fn in filenames:
-    print(fn)
-    img_denoised = imread(base_dir + 'denoised/' + fn)
-    binary_img = helpers.RandomForestSegmentation(img_denoised, modelpath, visualize=False)
-
-    imsave(output_dir + 'binary_' + fn, binary_img)    
-
-
-
-print('done')
+print("done")
