@@ -27,9 +27,7 @@ def main():
     different_competitions_folders = os.listdir(base_dir)
 
     for competition in different_competitions_folders[1:]:
-        WT_files, Mutant_files = helpers.GetTranswellData(
-            base_dir, competition, files_are_in
-        )
+        WT_files, Mutant_files = helpers.GetTranswellData(base_dir, competition, files_are_in)
 
         for WT_file, Mutant_file in zip(WT_files, Mutant_files):
             print(WT_file, Mutant_file)
@@ -37,25 +35,22 @@ def main():
             WT_img = imread(base_dir + competition + files_are_in + WT_file)
             Mutant_img = imread(base_dir + competition + files_are_in + Mutant_file)
 
-
             # start here the data normalization
             WT_normalized = helpers.NormalizeImg(WT_img)
             Mutant_normalized = helpers.NormalizeImg(Mutant_img)
 
             # start here the denoising with a pretrained model
             # see https://colab.research.google.com/drive/18PiNcg6t73GwjJqFbaYiVLJzSjYzFn2F
+            # pass it, if I want to just load the existing files
             WT_denoised = helpers.n2vDenoising(WT_normalized, visualize=False, pass_it=True)
-            Mutant_denoisded = helpers.n2vDenoising(Mutant_normalized, visualize=True,pass_it=True)
+            Mutant_denoisded = helpers.n2vDenoising(Mutant_normalized, visualize=True, pass_it=True)
 
-           
-            
             # start here the segmentation with a pretrained model
             modelpath = "models/RandomForestClassifier_transwell/random_forest_classifier_transwell_denoised.pkl"
             WT_segmented = helpers.RandomForestSegmentation(WT_denoised, modelpath, visualize=True)
-            Mutant_segmented = helpers.RandomForestSegmentation(Mutant_denoisded, modelpath, visualize=True)
-
-
-            # TODO: make a github repository for this
+            Mutant_segmented = helpers.RandomForestSegmentation(
+                Mutant_denoisded, modelpath, visualize=True
+            )
 
             # start here the quantification A (competition based on area)
 
@@ -70,7 +65,9 @@ def main():
     print("next")
 
     binary_fn = "predictions_transwell.tif"
-    intensity_fn = "denoised/WT_C2-MAX_20230424_5hpif_mix2_WTmScarlet_dwspFmNeonGreen_ours_R2_001-1.tif"
+    intensity_fn = (
+        "denoised/WT_C2-MAX_20230424_5hpif_mix2_WTmScarlet_dwspFmNeonGreen_ours_R2_001-1.tif"
+    )
 
     binary_img = imread(binary_fn)
     intensity_img = imread(intensity_fn)
