@@ -38,6 +38,7 @@ for WT_file, Mutant_file, WT_binary_file, Mutant_binary_file in zip(
 ):
     WT_img = imread(base_dir + competition + files_are_in + WT_file)
     Mutant_img = imread(base_dir + competition + files_are_in + Mutant_file)
+
     WT_segmentation = imread(
         base_dir + competition + files_are_in + "segmentation/" + WT_binary_file
     )
@@ -45,9 +46,14 @@ for WT_file, Mutant_file, WT_binary_file, Mutant_binary_file in zip(
         base_dir + competition + files_are_in + "segmentation/" + Mutant_binary_file
     )
 
-    # overlay the segmentation
-    WT_overlay_fig = helpers.OverlaySegmentation(WT_img, WT_segmentation)
-    WT_overlay_fig.savefig(output_dir + WT_file[:-4] + ".png", dpi=300)
+    # # overlay the segmentation
+    # ax_WT, WT_overlay_fig = helpers.OverlaySegmentation(WT_img, WT_segmentation)
+    # WT_overlay_fig.savefig(output_dir + WT_file[:-4] + ".png", dpi=300)
 
-    Mutant_overlay_fig = helpers.OverlaySegmentation(Mutant_img, Mutant_segmentation)
-    Mutant_overlay_fig.savefig(output_dir + Mutant_file[:-4] + ".png", dpi=300)
+    # ax_Mutant, Mutant_overlay_fig = helpers.OverlaySegmentation(Mutant_img, Mutant_segmentation)
+    # Mutant_overlay_fig.savefig(output_dir + Mutant_file[:-4] + ".png", dpi=300)
+
+    ax, merged_plot = helpers.OverlaySegmentation(
+        WT_img, WT_segmentation, Mutant_img, Mutant_segmentation
+    )
+    merged_plot.savefig(output_dir + WT_file[:-4] + "_merged.png", dpi=300)
