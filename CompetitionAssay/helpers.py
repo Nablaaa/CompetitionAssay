@@ -10,32 +10,134 @@ import pickle
 from skimage import filters
 
 
-def OverlaySegmentation(img, segmentation):
+def RemoveSmallObjects(segmentation, min_size=9):
+    """
+    Remove small objects from a segmentation
+    """
+    # segmentation can have multiple labels, so work with binary
+    binary = np.zeros_like(segmentation)
+    binary[segmentation > 0] = 1
+    segmentation_without_small_objects = remove_small_objects(
+        binary.astype("bool"), min_size=min_size
+    )
+
+    # convert back to original labels
+    segmentation[segmentation_without_small_objects == 0] = 0
+    return segmentation
+
+
+def PlotCompetitionsHistogram(WT_single_cell_area, Mutant_single_cell_area, visualize=False):
+    fig, ax = plt.subplots(1, 1, figsize=(10, 10))
+
+    max_value = np.max([WT_single_cell_area.max(), Mutant_single_cell_area.max()])
+    bins = np.linspace(0, max_value, 100)
+
+    hist1, bins1 = np.histogram(WT_single_cell_area, bins=bins)
+    hist2, bins2 = np.histogram(Mutant_single_cell_area, bins=bins)
+
+    hist1_log = np.log10(hist1)
+    hist2_log = np.log10(hist2)
+
+    # normalize histogram
+    hist1 = hist1_log / np.nansum(hist1_log[hist1_log > 0])
+    hist2 = hist2_log / np.nansum(hist2_log[hist2_log > 0])
+
+    plt.bar(bins1[:-1], hist1 + 1, width=np.diff(bins1), align="edge", alpha=0.5, label="WT")
+    plt.bar(bins2[:-1], hist2 + 1, width=np.diff(bins2), align="edge", alpha=0.5, label="Mutant")
+
+    plt.plot([0, max_value], [1, 1], "k-.", label="1 line")
+
+    plt.ylim([0.9, np.max([hist1, hist2]) + 1.1])
+    plt.legend()
+    plt.xlabel("Area[px]")
+    plt.ylabel("log(Count) + 1, Normalized")
+
+    if visualize:
+        plt.show()
+    return fig
+
+
+def Plot_Area_Histogram(
+    all_single_areas_WT, all_single_areas_Mutant, competition, output_dir, visualize=False
+):
+    max_value = np.max([all_single_areas_WT.max(), all_single_areas_Mutant.max()])
+    bins = np.linspace(0, max_value, 100)
+
+    plt.figure()
+    hist1, bins1 = np.histogram(all_single_areas_WT, bins=bins)
+    hist2, bins2 = np.histogram(all_single_areas_Mutant, bins=bins)
+    hist1_log = np.log10(hist1)
+    hist2_log = np.log10(hist2)
+
+    plt.bar(bins1[:-1], hist1_log + 1, width=np.diff(bins1), align="edge", alpha=0.5, label="WT")
+    plt.bar(
+        bins2[:-1], hist2_log + 1, width=np.diff(bins2), align="edge", alpha=0.5, label="Mutant"
+    )
+
+    plt.plot([0, np.max(bins2)], [1, 1], color="black", linestyle="--", linewidth=2, label="1")
+
+    plt.legend()
+    plt.xlabel("Area[px]")
+    plt.ylabel("log10(Count) + 1")
+    plt.title("Histogram of single cell areas")
+    plt.savefig(output_dir + "area_distribution_" + competition[:-1] + ".png", dpi=500)
+    plt.savefig(output_dir + "area_distribution_" + competition[:-1] + ".pdf", dpi=500)
+
+    if visualize:
+        plt.show()
+
+    else:
+        plt.close()
+
+    print("Histogram saved to: " + output_dir + "area_distribution_" + competition[:-1] + ".png")
+
+
+def OverlaySegmentation(img1, segmentation1, img2, segmentation2):
     import matplotlib.pyplot as plt
     import numpy as np
 
-    # Create a figure and axis
-    fig, ax = plt.subplots()
+    # Create a figure and axis with 2 plots
+    fig, ax = plt.subplots(1, 2, figsize=(10, 10))
 
-    # Plot intensity image
-    ax.imshow(img, cmap="gray", vmin=np.min(img), vmax=2 * np.mean(img))
+    ax[0].imshow(img1, cmap="gray", vmin=np.min(img1), vmax=2 * np.mean(img1))
 
     # Create a mask for the contour
-    contour_mask_1 = np.zeros_like(segmentation)
-    contour_mask_2 = np.zeros_like(segmentation)
-    contour_mask_1[segmentation == 1] = 1  # Change the value based on your label
-    contour_mask_2[segmentation == 2] = 2  # Change the value based on your label
+    contour_mask_1 = np.zeros_like(segmentation1)
+    contour_mask_2 = np.zeros_like(segmentation1)
+    contour_mask_1[segmentation1 == 1] = 1  # Change the value based on your label
+    contour_mask_2[segmentation1 == 2] = 2  # Change the value based on your label
 
     # Plot segmentation contour
-    contour_2 = ax.contour(contour_mask_2, colors="red", linewidths=0.4)
-    contour_1 = ax.contour(contour_mask_1, colors="cyan", linewidths=0.5)
+    contour_2 = ax[0].contour(contour_mask_2, colors="red", linewidths=0.4)
+    contour_1 = ax[0].contour(contour_mask_1, colors="cyan", linewidths=0.5)
 
     # Customize the contour appearance if needed
     # For example, you can set the transparency of the contour:
     contour_1.set_alpha(0.5)
     contour_2.set_alpha(0.5)
 
-    return fig
+    ax[1].imshow(img2, cmap="gray", vmin=np.min(img2), vmax=2 * np.mean(img2))
+
+    # Create a mask for the contour
+    contour_mask_1 = np.zeros_like(segmentation2)
+    contour_mask_2 = np.zeros_like(segmentation2)
+    contour_mask_1[segmentation2 == 1] = 1  # Change the value based on your label
+    contour_mask_2[segmentation2 == 2] = 2  # Change the value based on your label
+
+    # Plot segmentation contour
+    contour_2 = ax[1].contour(contour_mask_2, colors="red", linewidths=0.4)
+    contour_1 = ax[1].contour(contour_mask_1, colors="cyan", linewidths=0.5)
+
+    # Customize the contour appearance if needed
+    # For example, you can set the transparency of the contour:
+    contour_1.set_alpha(0.5)
+    contour_2.set_alpha(0.5)
+
+    # set title
+    ax[0].set_title("WT")
+    ax[1].set_title("Mutant")
+
+    return ax, fig
 
 
 # pick out a certain label (e.g. when classifier has 2 categories)
@@ -175,38 +277,6 @@ def ChangeMorphology(binary_img, N, show=False):
     return binary_img
 
 
-def Plot_Area_Histogram(
-    all_single_areas_WT, all_single_areas_Mutant, competition, output_dir, visualize=False
-):
-    plt.figure()
-    hist1, bins1 = np.histogram(all_single_areas_WT, bins=100)
-    hist2, bins2 = np.histogram(all_single_areas_Mutant, bins=100)
-    hist1_log = np.log10(hist1)
-    hist2_log = np.log10(hist2)
-
-    plt.bar(bins1[:-1], hist1_log + 1, width=np.diff(bins1), align="edge", alpha=0.5, label="WT")
-    plt.bar(
-        bins2[:-1], hist2_log + 1, width=np.diff(bins2), align="edge", alpha=0.5, label="Mutant"
-    )
-
-    plt.plot([0, np.max(bins2)], [1, 1], color="black", linestyle="--", linewidth=2, label="1")
-
-    plt.legend()
-    plt.xlabel("Area[px]")
-    plt.ylabel("log10(Count) + 1")
-    plt.title("Histogram of single cell areas")
-    plt.savefig(output_dir + "area_distribution_" + competition[:-1] + ".png", dpi=500)
-    plt.savefig(output_dir + "area_distribution_" + competition[:-1] + ".pdf", dpi=500)
-
-    if visualize:
-        plt.show()
-
-    else:
-        plt.close()
-
-    print("Histogram saved to: " + output_dir + "area_distribution_" + competition[:-1] + ".png")
-
-
 def GetCoveredAreaPercent(binary_img):
     return np.sum(binary_img) / (binary_img.shape[0] * binary_img.shape[1])
 
@@ -228,6 +298,28 @@ def GetSingleCellArea(binary_img):
     areas = [prop.area for prop in props]
 
     return np.array(areas)
+
+
+def GetSingleCellAreaAndIntensity(binary_img, intensity_img):
+    """Get the area of a single cell in a binary image"""
+
+    ChangeMorphology(binary_img, 2, show=False)
+
+    from skimage.measure import label, regionprops
+
+    # label the image
+    labeled_img = label(binary_img)
+
+    # get the area and intensityof each object
+    props = regionprops(labeled_img, intensity_image=intensity_img)
+
+    # get all areas
+    areas = [prop.area for prop in props]
+
+    # get all mean intensities
+    mean_intensities = [prop.mean_intensity for prop in props]
+
+    return np.array(areas), np.array(mean_intensities)
 
 
 def GetTranswellData(base_dir, competition, files_are_in):
