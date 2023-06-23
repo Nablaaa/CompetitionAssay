@@ -23,6 +23,9 @@ modelpath_Mutant = (
     "models/RandomForestClassifier_transwell/transwell_denoised_2_categories_Mutant.pkl"
 )
 
+# objects have to be at least 49 objects (e.g. 7x7) large
+min_size = 49
+
 # output directory
 output_dir = base_dir + competition + files_are_in + "segmentation/"
 
@@ -39,7 +42,9 @@ for WT_denoised_file, Mutant_denoised_file in zip(WT_denoised_files, Mutant_deno
     print(WT_denoised_file)
     WT_denoised = imread(base_dir + competition + files_are_in + "denoised/" + WT_denoised_file)
     WT_segmented = helpers.RandomForestSegmentation(WT_denoised, modelpath_WT, visualize=False)
-    imsave(output_dir + WT_denoised_file, WT_segmented)
+    WT_without_small_objects = helpers.RemoveSmallObjects(WT_segmented, min_size=min_size)
+
+    imsave(output_dir + WT_denoised_file, WT_without_small_objects)
 
     Mutant_denoised = imread(
         base_dir + competition + files_are_in + "denoised/" + Mutant_denoised_file
@@ -47,6 +52,7 @@ for WT_denoised_file, Mutant_denoised_file in zip(WT_denoised_files, Mutant_deno
     Mutant_segmented = helpers.RandomForestSegmentation(
         Mutant_denoised, modelpath_Mutant, visualize=False
     )
-    imsave(output_dir + Mutant_denoised_file, Mutant_segmented)
+    Mutant_without_small_objects = helpers.RemoveSmallObjects(Mutant_segmented, min_size=min_size)
+    imsave(output_dir + Mutant_denoised_file, Mutant_without_small_objects)
 
 print("done")
