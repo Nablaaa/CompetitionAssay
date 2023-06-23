@@ -29,7 +29,9 @@ if not os.path.exists(output_dir):
 
 # get all the intensity files in the directory
 WT_files, Mutant_files = helpers.GetTranswellData(base_dir, competition, files_are_in)
-WT_binary, Mutant_binary = helpers.GetTranswellData(base_dir, competition, files_are_in + "binary/")
+WT_binary, Mutant_binary = helpers.GetTranswellData(
+    base_dir, competition, files_are_in + "segmentation/"
+)
 
 
 area_covered_WT = []
@@ -47,9 +49,11 @@ for WT_file, Mutant_file, WT_binary_file, Mutant_binary_file in zip(
 ):
     # WT_img = imread(base_dir + competition + files_are_in + WT_file)
     # Mutant_img = imread(base_dir + competition + files_are_in + Mutant_file)
-    WT_segmentation = imread(base_dir + competition + files_are_in + "binary/" + WT_binary_file)
+    WT_segmentation = imread(
+        base_dir + competition + files_are_in + "segmentation/" + WT_binary_file
+    )
     Mutant_segmentation = imread(
-        base_dir + competition + files_are_in + "binary/" + Mutant_binary_file
+        base_dir + competition + files_are_in + "segmentation/" + Mutant_binary_file
     )
 
     # now pick a certain label
@@ -74,13 +78,19 @@ for WT_file, Mutant_file, WT_binary_file, Mutant_binary_file in zip(
     Mutant_mean_size.append(np.mean(Mutant_single_cell_area))
     Mutant_std_size.append(np.std(Mutant_single_cell_area))
 
+    # plot single competition as histogram
+    competition_hist_fig = helpers.PlotCompetitionsHistogram(
+        WT_single_cell_area, Mutant_single_cell_area, visualize=False
+    )
+    competition_hist_fig.savefig(output_dir + WT_file[:-4] + "_competition_histogram.png", dpi=300)
+    plt.close(competition_hist_fig)
 
 all_single_areas_WT = np.concatenate([arr.flatten() for arr in all_single_areas_WT])
 all_single_areas_Mutant = np.concatenate([arr.flatten() for arr in all_single_areas_Mutant])
 
 
 helpers.Plot_Area_Histogram(
-    all_single_areas_WT, all_single_areas_Mutant, competition, output_dir, visualize=False
+    all_single_areas_WT, all_single_areas_Mutant, competition, output_dir, visualize=True
 )
 
 
