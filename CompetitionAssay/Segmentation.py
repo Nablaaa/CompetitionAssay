@@ -35,12 +35,14 @@ if not os.path.exists(output_dir):
 
 # get all filenames
 WT_denoised_files, Mutant_denoised_files = helpers.GetTranswellData(
-    base_dir, competition, files_are_in + "binary/"
+    base_dir, competition, files_are_in + "denoised/"
 )
 
 for WT_denoised_file, Mutant_denoised_file in zip(WT_denoised_files, Mutant_denoised_files):
     print(WT_denoised_file)
     WT_denoised = imread(base_dir + competition + files_are_in + "denoised/" + WT_denoised_file)
+    # TODO: use the helpers.n2vDenoising function
+
     WT_segmented = helpers.RandomForestSegmentation(WT_denoised, modelpath_WT, visualize=False)
     WT_without_small_objects = helpers.RemoveSmallObjects(WT_segmented, min_size=min_size)
 

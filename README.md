@@ -30,7 +30,9 @@ conda activate competition_env
 - The first part is denoising using noise2void (since this step needs a tensorflow installation, it is the easiest to run it in google colab)
 - create a google drive account if you dont have it yet
 - save your data there
-- save the colab script there ("noise2void_prediction.ipynb")
+- save the model there (this file is too large to be saved on github - you have it already in dropbox under 
+imaging_datasets/models/ , but it is better placed in Google Drive where we need it ^^)
+- save the colab script in drive too ("noise2void_prediction.ipynb")
 - run the script in google colab (it will create a folder called "denoised" in which all results are saved)
 - download the results and add it to your data on your computer (so that you have the folder structure like: dataset_competition_assays/competition_2_WTmScarlet_dwspFmNeonGreen/TW_growth/denoised)
 - in future we will either do everything in colab or install tensorflow on your computer
