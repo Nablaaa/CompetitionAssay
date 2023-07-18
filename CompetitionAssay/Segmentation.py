@@ -43,7 +43,9 @@ for WT_denoised_file, Mutant_denoised_file in zip(WT_denoised_files, Mutant_deno
     WT_denoised = imread(base_dir + competition + files_are_in + "denoised/" + WT_denoised_file)
     # TODO: use the helpers.n2vDenoising function
 
-    WT_segmented = helpers.RandomForestSegmentation(WT_denoised, modelpath_WT, visualize=False)
+    WT_segmented = helpers.RandomForestSegmentation(
+        WT_denoised, modelpath_WT, return_binary=True, visualize=False
+    )
     WT_without_small_objects = helpers.RemoveSmallObjects(WT_segmented, min_size=min_size)
 
     imsave(output_dir + WT_denoised_file, WT_without_small_objects)
@@ -52,7 +54,7 @@ for WT_denoised_file, Mutant_denoised_file in zip(WT_denoised_files, Mutant_deno
         base_dir + competition + files_are_in + "denoised/" + Mutant_denoised_file
     )
     Mutant_segmented = helpers.RandomForestSegmentation(
-        Mutant_denoised, modelpath_Mutant, visualize=False
+        Mutant_denoised, modelpath_Mutant, return_binary=True, visualize=False
     )
     Mutant_without_small_objects = helpers.RemoveSmallObjects(Mutant_segmented, min_size=min_size)
     imsave(output_dir + Mutant_denoised_file, Mutant_without_small_objects)

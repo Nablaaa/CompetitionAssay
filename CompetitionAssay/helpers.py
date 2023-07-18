@@ -201,7 +201,7 @@ def NormalizeImg(img):
     return img
 
 
-def RandomForestSegmentation(img, modelpath, visualize=False):
+def RandomForestSegmentation(img, modelpath, return_binary=True, visualize=False):
     feature_stack = generate_feature_stack(img)
     loaded_classifier = pickle.load(open(modelpath, "rb"))
 
@@ -216,6 +216,9 @@ def RandomForestSegmentation(img, modelpath, visualize=False):
         axs[1].imshow(result_2d)
         axs[1].set_title("output")
         plt.show()
+
+    if return_binary:
+        result_2d[result_2d != 1] = 0
 
     return result_2d
 
