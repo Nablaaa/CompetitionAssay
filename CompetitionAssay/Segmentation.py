@@ -9,9 +9,7 @@ Later it will be integrated in a workflow (Quantification_transwell.py)
 
 import os
 from skimage.io import imread, imsave
-import numpy as np
 import helpers
-import matplotlib.pyplot as plt
 
 # define base directory
 base_dir = "dataset_competition_assays/"
