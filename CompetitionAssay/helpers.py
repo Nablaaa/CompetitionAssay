@@ -27,6 +27,11 @@ def RemoveSmallObjects(segmentation, min_size=9):
 
 
 def PlotCompetitionsHistogram(WT_single_cell_area, Mutant_single_cell_area, visualize=False):
+    """
+    This function plots histograms of the single cell areas of WT and Mutant for a single
+    competition (single image).
+    """
+
     fig, ax = plt.subplots(1, 1, figsize=(10, 10))
 
     max_value = np.max([WT_single_cell_area.max(), Mutant_single_cell_area.max()])
@@ -57,9 +62,14 @@ def PlotCompetitionsHistogram(WT_single_cell_area, Mutant_single_cell_area, visu
     return fig
 
 
-def Plot_Area_Histogram(
+def Plot_Area_Histogram_Overall(
     all_single_areas_WT, all_single_areas_Mutant, competition, output_dir, visualize=False
 ):
+    """
+    This function plot the area distribution of all mutants and WTs in all images in the folder.
+    So every image of a competition gives N_i values for mutant and M_i values for WT
+    and the histogram is plotted over all N_i and M_i values.
+    """
     max_value = np.max([all_single_areas_WT.max(), all_single_areas_Mutant.max()])
     bins = np.linspace(0, max_value, 100)
 

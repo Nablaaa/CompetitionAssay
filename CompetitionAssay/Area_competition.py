@@ -89,7 +89,7 @@ all_single_areas_WT = np.concatenate([arr.flatten() for arr in all_single_areas_
 all_single_areas_Mutant = np.concatenate([arr.flatten() for arr in all_single_areas_Mutant])
 
 
-helpers.Plot_Area_Histogram(
+helpers.Plot_Area_Histogram_Overall(
     all_single_areas_WT, all_single_areas_Mutant, competition, output_dir, visualize=True
 )
 
