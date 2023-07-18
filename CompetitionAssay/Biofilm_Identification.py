@@ -48,6 +48,7 @@ for WT_file, Mutant_file, WT_binary_file, Mutant_binary_file in zip(
     WT_files, Mutant_files, WT_binary, Mutant_binary
 ):
     print(WT_file + " is in progress")
+
     WT_img = imread(base_dir + competition + files_are_in + WT_file)
     Mutant_img = imread(base_dir + competition + files_are_in + Mutant_file)
     WT_segmentation = imread(
@@ -57,7 +58,7 @@ for WT_file, Mutant_file, WT_binary_file, Mutant_binary_file in zip(
         base_dir + competition + files_are_in + "segmentation/" + Mutant_binary_file
     )
 
-    # now pick a certain label
+    # now pick a certain label (redundant, if the random forest classifier returns binary image - its default)
     WT_binary_img = helpers.PickLabel(WT_segmentation, 1)
     Mutant_binary_img = helpers.PickLabel(Mutant_segmentation, 1)
 
@@ -67,23 +68,9 @@ for WT_file, Mutant_file, WT_binary_file, Mutant_binary_file in zip(
         Mutant_binary_img, Mutant_img
     )
 
-    max_WT_approx = np.median(np.sort(WT_intensity)[-30:])
-    max_Mutant_approx = np.median(np.sort(Mutant_intensity)[-30:])
-
-    # plot intensity vs area for both types
-    plt.figure()
-    plt.scatter(WT_area, WT_intensity / max_WT_approx, label="WT", color="b", alpha=0.5)
-    plt.scatter(
-        Mutant_area,
-        Mutant_intensity / max_Mutant_approx,
-        label="Mutant",
-        color="k",
-        alpha=0.5,
+    helpers.Plot_Biofilm_Identification(
+        WT_intensity, Mutant_intensity, WT_area, Mutant_area, WT_file, output_dir
     )
-    plt.xlabel("Area[px]")
-    plt.ylabel("Intensity")
-    plt.legend()
-    plt.savefig(output_dir + WT_file[:-4] + "_intensity_vs_area.png", dpi=500)
 
 
 print("done")
