@@ -371,3 +371,141 @@ def VisualizeSegmentation(intensity_img, binary_img, df):
 
     plt.savefig("Segmentation/mutant1.png", dpi=500)
     plt.show()
+
+
+def GetNormalizationFactor(intensity_img):
+    """
+    Probably the best strategy is to get the intensity of a single cell and then define
+    everything as multiple of it.
+
+    Since we do not have the resolution of this with the RFC yet, I use another approach based
+    on the maximum intensities of the image.
+    """
+
+    return np.median(np.sort(intensity_img.ravel())[-1000:])
+
+
+def Plot_Biofilm_Identification(
+    WT_intensity, Mutant_intensity, WT_area, Mutant_area, WT_file, output_dir
+):
+    max_WT_approx = GetNormalizationFactor(WT_intensity)
+    max_Mutant_approx = GetNormalizationFactor(Mutant_intensity)
+
+    # plot intensity vs area for both types
+    plt.figure()
+    plt.scatter(WT_area, WT_intensity / max_WT_approx, label="WT", color="b", alpha=0.5)
+    plt.scatter(
+        Mutant_area,
+        Mutant_intensity / max_Mutant_approx,
+        label="Mutant",
+        color="k",
+        alpha=0.5,
+    )
+    plt.xlabel("Area[px]")
+    plt.ylabel("Intensity")
+    plt.legend()
+    plt.savefig(output_dir + WT_file[:-4] + "_intensity_vs_area.png", dpi=500)
+
+
+def LocalCompetition(img_x, segmentation_x, img_y, segmentation_y, visualize=False):
+    """
+    This function takes two images and their segmentation and calculates the local competition.
+
+    So it uses segmentation_x to define a mask of the area of interest,
+    then it calculates the overlap with mask_y to get the overlapping area
+    (this measures how much competition has X in the location in which it lives)
+
+    Then it measures the intensity of all clusters of Y in the area of overlap with X,
+    so that an intensity density can be calculated
+    (this is a symmetric output, so X and Y can be swapped in the function but the result stays
+    the same)
+
+    => look at the histograms of measurement and see how we can define a paramter on it
+    """
+
+    # get the mask of the area of interest
+    mask_x = segmentation_x > 0
+    mask_y = segmentation_y > 0
+    overlap = mask_x * mask_y
+
+    # total area of the mask
+    total_area_x = np.sum(mask_x)
+    total_area_y = np.sum(mask_y)
+
+    # area competition of x in y
+    area_competition_x_in_y = np.sum(overlap) / total_area_y
+    area_competition_y_in_x = np.sum(overlap) / total_area_x
+
+    # get the overlapping area
+    overlapping_area = np.sum(overlap)
+
+    print(
+        "X competes against Y in %.2f percent of the area that is colonized by Y, so in %.2f percent of the area that is colonized by Y, Y has no competitor"
+        % (area_competition_x_in_y * 100, (1 - area_competition_x_in_y) * 100)
+    )
+    print(
+        "Y competes against X in %.2f percent of the area that is colonized by X, so in %.2f percent of the area that is colonized by X, X has no competitor"
+        % (area_competition_y_in_x * 100, (1 - area_competition_y_in_x) * 100)
+    )
+
+    # now consider the competition in the overlap region to find out who has more to say there
+
+    # normalize intensity of the image
+    norm_factor_x = GetNormalizationFactor(img_x)
+    img_x = img_x / norm_factor_x
+
+    norm_factor_y = GetNormalizationFactor(img_y)
+    img_y = img_y / norm_factor_y
+
+    # get the intensity of all clusters of x and y in the overlap region
+    x_in_overlap = img_x[overlap]
+    y_in_overlap = img_y[overlap]
+
+    # get the intensity density in the overlap region
+    normalized_intensity_density_x = np.sum(x_in_overlap) / overlapping_area
+    normalized_intensity_density_y = np.sum(y_in_overlap) / overlapping_area
+
+    # get the intensity density in the overall region
+    intensity_density_x_total = np.sum(img_x[mask_x]) / total_area_x
+    intensity_density_y_total = np.sum(img_y[mask_y]) / total_area_y
+
+    print(
+        "X has an intensity density of %.2f in the overlap region, Y has an intensity density of %.2f in the overlap region. For comparison: X has an intensity density of %.2f in the total region, Y has an intensity density of %.2f in the total region"
+        % (
+            normalized_intensity_density_x,
+            normalized_intensity_density_y,
+            intensity_density_x_total,
+            intensity_density_y_total,
+        )
+    )
+
+    if visualize == True:
+        # visualize in the image the different regions with different colors (overlap region, distinct x/y regions)
+        plt.figure()
+
+        distinct_x = np.logical_and(mask_x, np.logical_not(overlap))
+        distinct_y = np.logical_and(mask_y, np.logical_not(overlap))
+
+        final_img = np.zeros((img_x.shape[0], img_x.shape[1]))
+        final_img[distinct_x] = 1
+        final_img[distinct_y] = 2
+        final_img[overlap] = 3
+
+        plt.imshow(final_img)
+
+        plt.figure()
+        plt.imshow(img_x)
+        plt.title("img x")
+
+        plt.figure()
+        plt.imshow(img_y)
+        plt.title("img y")
+
+        plt.show()
+
+    return (
+        area_competition_x_in_y,
+        area_competition_y_in_x,
+        normalized_intensity_density_x,
+        normalized_intensity_density_y,
+    )
