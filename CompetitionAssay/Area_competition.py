@@ -40,8 +40,8 @@ area_covered_Mutant = []
 all_single_areas_WT = []
 all_single_areas_Mutant = []
 
-WT_mean_size, WT_std_size = [], []
-Mutant_mean_size, Mutant_std_size = [], []
+WT_mean_size, WT_median_size, WT_std_size = [], [], []
+Mutant_mean_size, Mutant_median_size, Mutant_std_size = [], [], []
 
 # go through all the files
 for WT_file, Mutant_file, WT_binary_file, Mutant_binary_file in zip(
@@ -71,11 +71,13 @@ for WT_file, Mutant_file, WT_binary_file, Mutant_binary_file in zip(
     WT_single_cell_area = helpers.GetSingleCellArea(WT_binary_img)
     all_single_areas_WT.append(WT_single_cell_area)
     WT_mean_size.append(np.mean(WT_single_cell_area))
+    WT_median_size.append(np.median(WT_single_cell_area))
     WT_std_size.append(np.std(WT_single_cell_area))
 
     Mutant_single_cell_area = helpers.GetSingleCellArea(Mutant_binary_img)
     all_single_areas_Mutant.append(Mutant_single_cell_area)
     Mutant_mean_size.append(np.mean(Mutant_single_cell_area))
+    Mutant_median_size.append(np.median(Mutant_single_cell_area))
     Mutant_std_size.append(np.std(Mutant_single_cell_area))
 
     # plot single competition as histogram
@@ -108,11 +110,13 @@ df = pl.DataFrame(
     {
         "Name": repetition_name,
         "WT[per]": area_covered_WT,
-        "Mutan[per]": area_covered_Mutant,
+        "Mutant[per]": area_covered_Mutant,
         "ratio[WT/Mutant]": ratio_WT_Mutant,
         "WT_mean_cluster_size[px]": WT_mean_size,
+        "WT_median_cluster_size[px]": WT_median_size,
         "WT_std_cluster_size[px]": WT_std_size,
         "Mutant_mean_cluster_size[px]": Mutant_mean_size,
+        "Mutant_median_cluster_size[px]": Mutant_median_size,
         "Mutant_std_cluster_size[px]": Mutant_std_size,
     }
 )
