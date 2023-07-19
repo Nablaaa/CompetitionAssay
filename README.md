@@ -28,14 +28,22 @@ conda activate competition_env
 
 ## How to run the program
 
+```
+conda activate competition_env
+cd /path/to/your/CompetitionAssay
+
+python3 CompetitionAssay/Segmentation.py
+python3 CompetitionAssay/Area_competition.py
+python3 CompetitionAssay/Biofilm_Identification.py
+python3 CompetitionAssay/Local_Competition.py
+```
+
+
 ### Step 1 - Denoising
 - The first part is denoising using noise2void (since this step needs a tensorflow installation, it is the easiest to run it in google colab)
 - create a google drive account if you dont have it yet
-- save your data there
-- save the model there (this file is too large to be saved on github - you have it already in dropbox under 
-imaging_datasets/models/ , but it is better placed in Google Drive where we need it ^^)
-- save the colab script in drive too ("noise2void_prediction.ipynb")
-- now the folder structure is like:
+- create a main folder and this file structure:
+
 ```
 - main folder
 --- noise2void_prediction.ipynb
@@ -46,6 +54,11 @@ imaging_datasets/models/ , but it is better placed in Google Drive where we need
         --- inoculum/
         --- TW_growth/
 ```
+
+- save your data there
+- save the model there (this file is too large to be saved on github - you have it already in dropbox under 
+imaging_datasets/models/ , but it is better placed in Google Drive where we need it ^^)
+- save the colab script in drive too ("noise2void_prediction.ipynb") - this script can be found in the repository
 - run the "noise2void_prediction" script in google colab (it will create a folder called "denoised" (inside the TW_growth) in which all results are saved)
 - now download the complete "dataset_competition_assays" to have it locally on your computer (or if you have it already then download only the "denoised" folder and add it to the TW_growth folder)
 - P.S. in future we will either do everything in colab or install tensorflow on your computer
