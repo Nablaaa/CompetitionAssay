@@ -66,6 +66,7 @@ list_area_Mutant_in_WT = []
 list_intensity_density_WT_in_Mutant = []
 list_intensity_density_Mutant_in_WT = []
 
+
 df = pl.DataFrame(
     {
         "Name": [],
@@ -130,5 +131,7 @@ plt.figure(figsize=(15, 15))
 df.to_pandas().boxplot()
 # rotate the x labels by 45 degrees
 plt.xticks(rotation=30)
+plt.title("Local Competition")
+plt.tight_layout()
 plt.savefig(output_dir + "boxplot_local_competition.png", dpi=500)
 plt.close()
