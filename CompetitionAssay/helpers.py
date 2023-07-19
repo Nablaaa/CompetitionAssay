@@ -509,3 +509,15 @@ def LocalCompetition(img_x, segmentation_x, img_y, segmentation_y, visualize=Fal
         normalized_intensity_density_x,
         normalized_intensity_density_y,
     )
+
+
+def MakeSameSizeDf(X, Y):
+    """
+    This function takes two dataframes and makes them the same size by randomly removing rows from the larger one
+    """
+    if len(X) > len(Y):
+        Y = np.concatenate([Y, np.full(len(X) - len(Y), np.nan)])
+    elif len(X) < len(Y):
+        X = np.concatenate([X, np.full(len(Y) - len(X), np.nan)])
+
+    return X, Y

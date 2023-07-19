@@ -33,6 +33,7 @@ WT_binary, Mutant_binary = helpers.GetTranswellData(
     base_dir, competition, files_are_in + "segmentation/"
 )
 
+repetition_name = [WT_binary[i][-12:-4] for i in range(len(WT_binary))]
 
 area_covered_WT = []
 area_covered_Mutant = []
@@ -44,8 +45,8 @@ WT_mean_size, WT_median_size, WT_std_size = [], [], []
 Mutant_mean_size, Mutant_median_size, Mutant_std_size = [], [], []
 
 # go through all the files
-for WT_file, Mutant_file, WT_binary_file, Mutant_binary_file in zip(
-    WT_files, Mutant_files, WT_binary, Mutant_binary
+for i, (WT_file, Mutant_file, WT_binary_file, Mutant_binary_file) in enumerate(
+    zip(WT_files, Mutant_files, WT_binary, Mutant_binary)
 ):
     # WT_img = imread(base_dir + competition + files_are_in + WT_file)
     # Mutant_img = imread(base_dir + competition + files_are_in + Mutant_file)
@@ -81,28 +82,39 @@ for WT_file, Mutant_file, WT_binary_file, Mutant_binary_file in zip(
     Mutant_std_size.append(np.std(Mutant_single_cell_area))
 
     # plot single competition as histogram
+    print(WT_file)
     competition_hist_fig = helpers.PlotCompetitionsHistogram(
         WT_single_cell_area, Mutant_single_cell_area, visualize=False
     )
     competition_hist_fig.savefig(output_dir + WT_file[:-4] + "_competition_histogram.png", dpi=300)
     plt.close(competition_hist_fig)
 
+    # save the data from the plot as csv
+    X, Y = helpers.MakeSameSizeDf(WT_single_cell_area, Mutant_single_cell_area)
+
+    params = pl.DataFrame(
+        {
+            "WT_single_cell_area[px]": X,
+            "Mutant_single_cell_area[px]": Y,
+        }
+    )
+
+    params.write_csv(output_dir + WT_file[:-4] + ".csv", separator=",")
+
+
 all_single_areas_WT = np.concatenate([arr.flatten() for arr in all_single_areas_WT])
 all_single_areas_Mutant = np.concatenate([arr.flatten() for arr in all_single_areas_Mutant])
 
 
 helpers.Plot_Area_Histogram_Overall(
-    all_single_areas_WT, all_single_areas_Mutant, competition, output_dir, visualize=True
+    all_single_areas_WT, all_single_areas_Mutant, competition, output_dir, visualize=False
 )
 
 
 # convert to numpy
 area_covered_WT = np.array(area_covered_WT)
 area_covered_Mutant = np.array(area_covered_Mutant)
-
 ratio_WT_Mutant = area_covered_WT / area_covered_Mutant
-
-repetition_name = [WT_binary[i][-12:-4] for i in range(len(ratio_WT_Mutant))]
 
 
 # create polars df
