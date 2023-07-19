@@ -9,10 +9,7 @@ Results seem to make sense with respect to images
 
 import os
 from skimage.io import imread
-import numpy as np
 import helpers
-import polars as pl
-from matplotlib import pyplot as plt
 
 # define base directory
 base_dir = "dataset_competition_assays/"
