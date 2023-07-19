@@ -22,7 +22,7 @@ modelpath_Mutant = (
 )
 
 # objects have to be at least 49 objects (e.g. 7x7) large
-min_size = 49
+min_size = 49  # pixels
 
 # output directory
 output_dir = base_dir + competition + files_are_in + "segmentation/"
