@@ -3,3 +3,4 @@ dataset_*/
 *.h5
 *.pyc
 *.v2
+data_3D/
