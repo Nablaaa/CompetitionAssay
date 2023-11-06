@@ -1,10 +1,10 @@
 import setuptools
 
-with open("README.rst", "r", encoding="utf-8") as fh:
+with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="ericstools",
+    name="competitionassay",
     version="0.0.1",
     author="Eric Schmidt",
     author_email="eric_schmidt_99@gmx.de",
