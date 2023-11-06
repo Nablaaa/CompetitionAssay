@@ -1,5 +1,22 @@
 # Competition Assay
 
+TODOS:
+- create an environment.yml file for: conda env create -f environment.yml
+- Create noise2void_requirements.txt
+- write test file for RFC class
+- rewrite the Segmentation.py script and maybe use it as example, since the basic functions should be accessible from pip, but the script itself is the example usage of it
+- create a new venv that contains the competition assay as pip install -e . and test if things work as planned (maybe i then do not even need the sys stuff in the example script)
+
+- remove the example stuff from .gitignore
+
+- Area_competition: for b and c corresponding csv files
+- biofilm identification: normalize with the intensity of a single cell, if segmentation is able to detect single cells
+- local competition:
+    - subtract background intensity first (based on 2-class classification) 
+    - as a better intensity parameter: compare ratios between mutant and WT intensity instead of the absolute (normalized) value as it is right now. Then compare these ratios with the ones from the distinct area (only X or only Y), to have a baseline
+***
+
+
 Hi Lucas,
 
 I divided this script in several sub scripts with the idea that you can try step by step what you need and what makes sense for you.
@@ -18,8 +35,6 @@ conda create -n competition_env
 conda activate competition_env
 ```
 - install all necessary packages **manually**
-- TODO Eric: create an environment.yml file for: conda env create -f environment.yml
- 
 
 ## How to organize your data and the scripts
 - **this you should already have:** store your data in one folder (e.g. a folder called "dataset_competition_assays") with subfolders (e.g. "competition_2_WTmScarlet_dwspFmNeonGreen") and put inside the "inoculum" and "TW_growth" data
@@ -66,7 +81,6 @@ imaging_datasets/models/ , but it is better placed in Google Drive where we need
 - P.S. in future we will either do everything in colab or install tensorflow on your computer
 
 #### Local installation
-Todo Eric: Create noise2void_requirements.txt
 ```
 conda activate competition_env
 pip install -r noise2void_requirements.txt
@@ -91,7 +105,9 @@ pip install -r noise2void_requirements.txt
             --- denoised/
 ```
 
-- the RandomForestClassifier model is on GitHub, please place it in the models folder (next to the noise2void model)
+- you can run the example script inside the "examples" folder. Just make sure that it has the following file path defined: "competition_2_WTmScarlet_dwspFmNeonGreen/TW_growth/denoised/WT_C2-MAX_20230424_5hpif_mix2_WTmScarlet_dwspFmNeonGreen_ours_R3_003-1.tif"
+
+- the RandomForestClassifier model is on GitHub and if you download the repo, it will already be in the right position, otherwise, please place it in the models folder (next to the noise2void model)
 - open the Segmentation.py script and define the right base directory and model path 
 - define the minimum object size (in pixels)
 - run the script (dependencies should be already installed)
