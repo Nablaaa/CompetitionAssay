@@ -12,8 +12,9 @@ Later it will be integrated in a workflow (Quantification_transwell.py)
 
 import os
 from skimage.io import imread, imsave
-from CompetitionAssay import helpers
-from CompetitionAssay.datahandling import NormalizeImg, GetTranswellData
+from CompetitionAssay.datahandling import GetTranswellData
+from CompetitionAssay.denoising import n2vDenoising
+from CompetitionAssay.binarization import myRFC, RemoveSmallObjects
 
 
 def main():
@@ -45,7 +46,7 @@ def main():
         if not os.path.exists(output_dir_binary):
             os.makedirs(output_dir_binary)
 
-        WT_files, Mutant_files = helpers.GetTranswellData(base_dir, competition, files_are_in)
+        WT_files, Mutant_files = GetTranswellData(base_dir, competition, files_are_in)
 
         for WT_file, Mutant_file in zip(WT_files, Mutant_files):
             print(WT_file, Mutant_file)
@@ -57,10 +58,10 @@ def main():
                 # start here the denoising with a pretrained model
                 # see https://colab.research.google.com/drive/18PiNcg6t73GwjJqFbaYiVLJzSjYzFn2F
                 # pass it, if I want to just load the existing files
-                WT_denoised = helpers.n2vDenoising(WT_img, visualize=False)
+                WT_denoised = n2vDenoising(WT_img, visualize=False)
                 imsave(output_dir_denoised + WT_file, WT_denoised)
 
-                Mutant_denoised = helpers.n2vDenoising(Mutant_img, visualize=True)
+                Mutant_denoised = n2vDenoising(Mutant_img, visualize=True)
                 imsave(output_dir_denoised + Mutant_file, Mutant_denoised)
 
             else:
@@ -71,16 +72,14 @@ def main():
 
             # start here the segmentation with a pretrained model
 
-            WT_RFC = helpers.myRFC(RFC_modelpath_WT)
+            WT_RFC = myRFC(RFC_modelpath_WT)
             WT_binary = WT_RFC.predict(WT_denoised)
-            WT_without_small_objects = helpers.RemoveSmallObjects(WT_binary, min_size=min_size)
+            WT_without_small_objects = RemoveSmallObjects(WT_binary, min_size=min_size)
             imsave(output_dir_binary + WT_file, WT_without_small_objects)
 
-            mutant_RFC = helpers.myRFC(RFC_modelpath_Mutant)
+            mutant_RFC = myRFC(RFC_modelpath_Mutant)
             Mutant_binary = mutant_RFC.predict(Mutant_denoised)
-            Mutant_without_small_objects = helpers.RemoveSmallObjects(
-                Mutant_binary, min_size=min_size
-            )
+            Mutant_without_small_objects = RemoveSmallObjects(Mutant_binary, min_size=min_size)
             imsave(output_dir_binary + Mutant_file, Mutant_without_small_objects)
 
             # start here the quantification A (competition based on area)
