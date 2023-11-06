@@ -9,16 +9,10 @@ Only the foreground and background will be used as the final binary output.
 
 Please define the path to the denoised competition assay to run the file
 """
-import sys
-import os
-
-project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-sys.path.append(project_root + "/CompetitionAssay")
-print(project_root)
 
 
 from skimage.io import imread
-from helpers import myRFC
+from CompetitionAssay.binarization import myRFC
 
 
 def main():
