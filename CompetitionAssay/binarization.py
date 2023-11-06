@@ -5,7 +5,7 @@ This file contains all classes that are connected to binarization,which is RFC a
 """
 
 from skimage.morphology import binary_erosion, binary_dilation, remove_small_objects
-import CompetitionAssay import datahandling
+from CompetitionAssay import datahandling
 import numpy as np
 import pickle
 import matplotlib.pyplot as plt
@@ -25,13 +25,6 @@ def RemoveSmallObjects(segmentation, min_size=9):
     # convert back to original labels
     segmentation[segmentation_without_small_objects == 0] = 0
     return segmentation
-
-
-# # pick out a certain label (e.g. when classifier has 2 categories)
-# def PickLabel(img, label):
-#     img[img != label] = 0
-#     img[img == label] = 1
-#     return img
 
 
 class myRFC:
