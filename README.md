@@ -40,7 +40,9 @@ python3 CompetitionAssay/Local_Competition.py
 
 
 ### Step 1 - Denoising
-- The first part is denoising using noise2void (since this step needs a tensorflow installation, it is the easiest to run it in google colab)
+- The first part is denoising using noise2void (since this step needs a tensorflow installation, it is the easiest to run it in google colab, but you can also install tensorflow on your computer and run it locally)
+
+#### Google Colab (recommended for people without GPU or who do not want to install tensorflow on their computer)
 - create a google drive account if you dont have it yet
 - create a main folder and this file structure:
 
@@ -59,9 +61,18 @@ python3 CompetitionAssay/Local_Competition.py
 - save the model there (this file is too large to be saved on github - you have it already in dropbox under 
 imaging_datasets/models/ , but it is better placed in Google Drive where we need it ^^)
 - save the colab script in drive too ("noise2void_prediction.ipynb") - this script can be found in the repository
-- run the "noise2void_prediction" script in google colab (it will create a folder called "denoised" (inside the TW_growth) in which all results are saved)
-- now download the complete "dataset_competition_assays" to have it locally on your computer (or if you have it already then download only the "denoised" folder and add it to the TW_growth folder)
+- run the "noise2void_prediction.ipynb" script in google colab (it will create a folder called "denoised" (inside the TW_growth) in which all results are saved)
+- now download the complete "dataset_competition_assays" to have it locally on your computer (or if you have it already on your computer, then download only the "denoised" folder and add it to the TW_growth folder)
 - P.S. in future we will either do everything in colab or install tensorflow on your computer
+
+#### Local installation
+Todo Eric: Create noise2void_requirements.txt
+```
+conda activate competition_env
+pip install -r noise2void_requirements.txt
+```
+
+
 
 ### Step 2 - Segmentation
 - place the denoised files in the right location (see below)
