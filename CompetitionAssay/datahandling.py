@@ -1,12 +1,14 @@
 """
 Author: Eric Schmidt
 
-This file contains all classes that help to load, save, and in general handle the data.
+This file contains all classes that help to load, save
+and in general handle the data.
 """
 
 import numpy as np
 from skimage import filters
 import os
+from typing import List
 
 
 # def ReadData(folder, format="tif"):
@@ -42,7 +44,8 @@ def generate_feature_stack(image):
 
     # collect features in a stack
     # The ravel() function turns a nD image into a 1-D image.
-    # We need to use it because scikit-learn expects values in a 1-D format here.
+    # We need to use it because scikit-learn expects values
+    # in a 1-D format here.
     feature_stack = [image.ravel(), blurred.ravel(), edges.ravel()]
 
     # return stack as numpy-array
@@ -56,7 +59,8 @@ def format_data(feature_stack, annotation):
     # make the annotation 1-dimensional
     y = annotation.ravel()
 
-    # remove all pixels from the feature and annotations which have not been annotated
+    # remove all pixels from the feature and annotations which have
+    # not been annotated
     mask = y > 0
     X = X[mask]
     y = y[mask]
@@ -83,23 +87,33 @@ def GetTranswellData(base_dir, competition, files_are_in):
 
 def GetNormalizationFactor(intensity_img):
     """
-    Probably the best strategy is to get the intensity of a single cell and then define
+    Probably the best strategy is to get the intensity
+    of a single cell and then define
     everything as multiple of it.
 
-    Since we do not have the resolution of this with the RFC yet, I use another approach based
+    Since we do not have the resolution of this with the RFC yet,
+    I use another approach based
     on the maximum intensities of the image.
     """
 
     return np.median(np.sort(intensity_img.ravel())[-1000:])
 
 
-def MakeSameSizeDf(X, Y):
+def MakeSameSizeArray(arr_list: List[np.ndarray]) -> List[np.ndarray]:
     """
-    This function takes two dataframes and makes them the same size by randomly removing rows from the larger one
+    This function takes a list of numpy arrays and makes them the same size by
+    appending nan elements
     """
-    if len(X) > len(Y):
-        Y = np.concatenate([Y, np.full(len(X) - len(Y), np.nan)])
-    elif len(X) < len(Y):
-        X = np.concatenate([X, np.full(len(Y) - len(X), np.nan)])
+    max_len = max(len(arr) for arr in arr_list)
 
-    return X, Y
+    new_arr_list = []
+    for arr in arr_list:
+        if len(arr) < max_len:
+            missing_rows = max_len - len(arr)
+            new_arr = np.concatenate([arr, np.full(missing_rows, np.nan)])
+        else:
+            new_arr = arr.copy()
+
+        new_arr_list.append(new_arr)
+
+    return new_arr_list
