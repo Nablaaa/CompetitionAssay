@@ -4,10 +4,29 @@ TODOS:
 - create an environment.yml file for: conda env create -f environment.yml
 - Create noise2void_requirements.txt
 - write test file for RFC class
-- rewrite the Segmentation.py script and maybe use it as example, since the basic functions should be accessible from pip, but the script itself is the example usage of it
-- create a new venv that contains the competition assay as pip install -e . and test if things work as planned (maybe i then do not even need the sys stuff in the example script)
+- write n2V class for denoising
+- bring the area competition, Biofilm identification, local_competition to examples.
+- bring segmentatio_img_overlay to examples and save the backend in visualization.py as a class  
+- pip install -e .    ==> works
 
-- remove the example stuff from .gitignore
+
+- test Area_competition.py
+- test Biofilm_Identification.py
+- test Local_Competition.py
+
+- find a better way to get the repetition name inside the script Area_competition.py at the moment it is very ugly:
+```python
+repetition_name = [WT_binary[i][-12:-4] for i in range(len(WT_binary))]
+```
+
+- remove the example data from .gitignore or maybe do not work with example data at all since it is normal data in the end
+- remove the commented files in :
+    - datahandling/readdata
+    - quantification/"only area stuff without intensity"
+
+- implement n2v locally with pretrained model
+
+- do not necessarily save visualizations per default
 
 - Area_competition: for b and c corresponding csv files
 - biofilm identification: normalize with the intensity of a single cell, if segmentation is able to detect single cells
