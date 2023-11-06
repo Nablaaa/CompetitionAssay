@@ -5,7 +5,6 @@ from skimage.morphology import binary_erosion, binary_dilation, remove_small_obj
 
 # from n2v.models import N2V
 
-from sklearn.ensemble import RandomForestClassifier
 import pickle
 from skimage import filters
 
@@ -211,26 +210,67 @@ def NormalizeImg(img):
     return img
 
 
-def RandomForestSegmentation(img, modelpath, return_binary=True, visualize=False):
-    feature_stack = generate_feature_stack(img)
-    loaded_classifier = pickle.load(open(modelpath, "rb"))
+from typing import Any
 
-    result_1d = loaded_classifier.predict(feature_stack.T) - 1  # subtract 1 to make background = 0
-    result_2d = result_1d.reshape(img.shape)
 
-    if visualize:
+class myRFC:
+    """Initialize the RFC, load the model and wait for data
+    Input: model
+
+    Functions:
+    predict(img)
+        returns binary image
+    visualize()
+        shows the input and the output
+    """
+
+    def __init__(self, modelpath: str) -> None:
+        self.classifier = pickle.load(open(modelpath, "rb"))
+
+    def predict(self, img: np.ndarray) -> np.ndarray:
+        """binarizes the image"""
+
+        self.img = img
+        img_shape = img.shape
+        feature_stack = generate_feature_stack(self.img)
+
+        result_1d = self.classifier.predict(feature_stack.T) - 1
+        self.result_2d = result_1d.reshape(img_shape)
+        self.result_2d[self.result_2d != 1] = 0
+
+        return self.result_2d
+
+    def visualize(self) -> None:
+        """Visualize the segmentation"""
         # create a plot with 2 subplots and add the img and the result_2d
         fig, axs = plt.subplots(1, 2, figsize=(10, 10))
-        axs[0].imshow(img)
+        axs[0].imshow(self.img)
         axs[0].set_title("input")
-        axs[1].imshow(result_2d)
+        axs[1].imshow(self.result_2d)
         axs[1].set_title("output")
         plt.show()
 
-    if return_binary:
-        result_2d[result_2d != 1] = 0
 
-    return result_2d
+# def RandomForestSegmentation(img, modelpath, return_binary=True, visualize=False):
+#     feature_stack = generate_feature_stack(img)
+#     loaded_classifier = pickle.load(open(modelpath, "rb"))
+
+#     result_1d = loaded_classifier.predict(feature_stack.T) - 1  # subtract 1 to make background = 0
+#     result_2d = result_1d.reshape(img.shape)
+
+#     if visualize:
+#         # create a plot with 2 subplots and add the img and the result_2d
+#         fig, axs = plt.subplots(1, 2, figsize=(10, 10))
+#         axs[0].imshow(img)
+#         axs[0].set_title("input")
+#         axs[1].imshow(result_2d)
+#         axs[1].set_title("output")
+#         plt.show()
+
+#     if return_binary:
+#         result_2d[result_2d != 1] = 0
+
+#     return result_2d
 
 
 def generate_feature_stack(image):
