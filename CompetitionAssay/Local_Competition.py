@@ -32,7 +32,7 @@ and vice versa
 
 import os
 from skimage.io import imread
-import helpers
+from CompetitionAssay import datahandling, quantification
 import polars as pl
 from matplotlib import pyplot as plt
 
@@ -53,10 +53,10 @@ if not os.path.exists(output_dir):
 # get all filenames of the intensity files (not the denoised files,
 # since noise2void may manipulates the intensity so that it can not
 # be used for quantification)
-WT_files, Mutant_files = helpers.GetTranswellData(base_dir, competition, files_are_in)
+WT_files, Mutant_files = datahandling.GetTranswellData(base_dir, competition, files_are_in)
 
 # get segmentation files
-WT_binary_files, Mutant_binary_files = helpers.GetTranswellData(
+WT_binary_files, Mutant_binary_files = datahandling.GetTranswellData(
     base_dir, competition, files_are_in + "segmentation/"
 )
 
@@ -98,7 +98,7 @@ for i, (WT_file, Mutant_file, WT_binary_file, Mutant_binary_file) in enumerate(
         area_competition_y_in_x,
         normalized_intensity_density_x,
         normalized_intensity_density_y,
-    ) = helpers.LocalCompetition(
+    ) = quantification.LocalCompetition(
         WT_img, WT_segmentation, Mutant_img, Mutant_segmentation, visualize=False
     )
 
