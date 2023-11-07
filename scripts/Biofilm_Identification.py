@@ -16,7 +16,7 @@ from CompetitionAssay.visualization import Plot_Biofilm_Identification
 
 def main():
     # define base directory
-    base_dir = "example_data/"
+    base_dir = "example_data/competitions/"
     files_are_in = "/TW_growth/"
 
     # get all the files in the directory
