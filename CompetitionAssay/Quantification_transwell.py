@@ -6,14 +6,11 @@ It needs binary images as input and produces
 ... as output
 """
 import os
-from skimage.io import imread, imsave
-import numpy as np
-import pandas as pd
+from skimage.io import imread
 import matplotlib.pyplot as plt
 
 import polars as pl
 from skimage.measure import label, regionprops_table
-import nd2
 from skimage.morphology import remove_small_objects
 import helpers
 
