@@ -19,7 +19,7 @@ from CompetitionAssay.binarization import myRFC, RemoveSmallObjects
 
 def main():
     # define base directory
-    base_dir = "examples/example_data/"
+    base_dir = "example_data/"
     files_are_in = "/TW_growth/"
 
     RFC_modelpath_WT = (

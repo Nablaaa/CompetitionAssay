@@ -14,7 +14,7 @@ from skimage.io import imread
 from CompetitionAssay import datahandling, visualization
 
 # define base directory
-base_dir = "examples/example_data/"
+base_dir = "example_data/"
 competition = "competition_2_WTmScarlet_dwspFmNeonGreen/"
 files_are_in = "TW_growth/"
 
@@ -46,4 +46,4 @@ for WT_file, Mutant_file, WT_binary_file, Mutant_binary_file in zip(
 
     repetition_name = WT_file[-12:-4]
 
-    merged_plot.savefig(output_dir + repetition_name + "_visualication.png", dpi=300)
+    merged_plot.savefig(output_dir + repetition_name + "_visualization.png", dpi=300)
