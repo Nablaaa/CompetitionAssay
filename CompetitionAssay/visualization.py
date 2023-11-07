@@ -9,7 +9,6 @@ import numpy as np
 from CompetitionAssay.datahandling import GetNormalizationFactor
 
 
-
 def PlotCompetitionsHistogram(WT_single_cell_area, Mutant_single_cell_area, visualize=False):
     """
     This function plots histograms of the single cell areas of WT and Mutant for a single
@@ -86,9 +85,11 @@ def Plot_Area_Histogram_Overall(
     print("Histogram saved to: " + output_dir + "area_distribution_" + competition[:-1] + ".png")
 
 
-def OverlaySegmentation(img1, segmentation1, img2, segmentation2):
-    import matplotlib.pyplot as plt
-    import numpy as np
+def OverlaySegmentationMulticlass(img1, segmentation1, img2, segmentation2):
+    """This function can be used to plot the overlay of the segmentation contour on the image when
+    having 3 classes output (e.g. directly after making the RFC classification, before binarizing
+    the image). The function is not used in the pipeline, because I directly force the RFC output
+    to be binary, but the function can still be used for visualization."""
 
     # Create a figure and axis with 2 plots
     fig, ax = plt.subplots(1, 2, figsize=(10, 10))
@@ -134,7 +135,44 @@ def OverlaySegmentation(img1, segmentation1, img2, segmentation2):
     return ax, fig
 
 
+def OverlaySegmentation(img1, segmentation1, img2, segmentation2):
+    """This function can be used to plot the overlay of the segmentation contour on the image when
+    having 2 classes output"""
 
+    # Create a figure and axis with 2 plots
+    fig, ax = plt.subplots(1, 2, figsize=(10, 10))
+
+    ax[0].imshow(img1, cmap="gray", vmin=np.min(img1), vmax=2 * np.mean(img1))
+
+    # Create a mask for the contour
+    contour_mask_1 = np.zeros_like(segmentation1)
+    contour_mask_1[segmentation1 == 1] = 1  # Change the value based on your label
+
+    # Plot segmentation contour
+    contour_1 = ax[0].contour(contour_mask_1, colors="cyan", linewidths=0.5)
+
+    # Customize the contour appearance if needed
+    # For example, you can set the transparency of the contour:
+    contour_1.set_alpha(0.5)
+
+    ax[1].imshow(img2, cmap="gray", vmin=np.min(img2), vmax=2 * np.mean(img2))
+
+    # Create a mask for the contour
+    contour_mask_1 = np.zeros_like(segmentation2)
+    contour_mask_1[segmentation2 == 1] = 1  # Change the value based on your label
+
+    # Plot segmentation contour
+    contour_1 = ax[1].contour(contour_mask_1, colors="cyan", linewidths=0.5)
+
+    # Customize the contour appearance if needed
+    # For example, you can set the transparency of the contour:
+    contour_1.set_alpha(0.5)
+
+    # set title
+    ax[0].set_title("WT")
+    ax[1].set_title("Mutant")
+
+    return ax, fig
 
 
 def VisualizeSegmentation(intensity_img, binary_img, df):
@@ -158,8 +196,6 @@ def VisualizeSegmentation(intensity_img, binary_img, df):
     plt.show()
 
 
-
-
 def Plot_Biofilm_Identification(
     WT_intensity, Mutant_intensity, WT_area, Mutant_area, WT_file, output_dir
 ):
@@ -180,4 +216,3 @@ def Plot_Biofilm_Identification(
     plt.ylabel("Intensity")
     plt.legend()
     plt.savefig(output_dir + WT_file[:-4] + "_intensity_vs_area.png", dpi=500)
-
