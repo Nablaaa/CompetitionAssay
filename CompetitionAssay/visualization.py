@@ -196,23 +196,40 @@ def VisualizeSegmentation(intensity_img, binary_img, df):
     plt.show()
 
 
-def Plot_Biofilm_Identification(
-    WT_intensity, Mutant_intensity, WT_area, Mutant_area, WT_file, output_dir
-):
+def Plot_Biofilm_Identification(WT_intensity, Mutant_intensity, WT_area, Mutant_area):
     max_WT_approx = GetNormalizationFactor(WT_intensity)
     max_Mutant_approx = GetNormalizationFactor(Mutant_intensity)
 
     # plot intensity vs area for both types
-    plt.figure()
-    plt.scatter(WT_area, WT_intensity / max_WT_approx, label="WT", color="b", alpha=0.5)
-    plt.scatter(
+    fig, ax = plt.subplots(1, 1, figsize=(10, 10))
+    ax.scatter(WT_area, WT_intensity / max_WT_approx, label="WT", color="b", alpha=0.5)
+    ax.scatter(
         Mutant_area,
         Mutant_intensity / max_Mutant_approx,
         label="Mutant",
         color="k",
         alpha=0.5,
     )
+
+    # get maximum of the areas
+    max_area = max(*WT_area, *Mutant_area)
+    max_intensity = max(*WT_intensity / max_WT_approx, *Mutant_intensity / max_Mutant_approx)
+    min_intensity = min(*WT_intensity / max_WT_approx, *Mutant_intensity / max_Mutant_approx)
+
+    plt.hlines(y=1, xmin=0, xmax=max_area, color="k", linestyle="--", linewidth=2)
+    plt.vlines(
+        x=800, ymin=min_intensity, ymax=max_intensity, color="k", linestyle="--", linewidth=2
+    )
+
+    # add text
+    plt.text(0.6 * max_area, max_intensity, "Large Biofilms", fontsize=15)
+    plt.text(0.6 * max_area, min_intensity, "Large Dead Biofilms", fontsize=15)
+
+    plt.text(0, max_intensity, "Small Agglomerations", fontsize=15)
+    plt.text(0, min_intensity, "Small single events", fontsize=15)
+
     plt.xlabel("Area[px]")
     plt.ylabel("Intensity")
     plt.legend()
-    plt.savefig(output_dir + WT_file[:-4] + "_intensity_vs_area.png", dpi=500)
+
+    return ax, fig
