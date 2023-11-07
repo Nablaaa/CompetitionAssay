@@ -18,22 +18,22 @@ def GetCoveredAreaPercent(binary_img: np.ndarray) -> float:
     return np.sum(binary_img) / (binary_img.shape[0] * binary_img.shape[1])
 
 
-def GetSingleCellArea(binary_img: np.ndarray) -> np.ndarray:
-    """Get the area of a single cell in a binary image"""
-    assert np.unique(binary_img).size == 2, "binary_img must be binary"
+# def GetSingleCellArea(binary_img: np.ndarray) -> np.ndarray:
+#     """Get the area of a single cell in a binary image"""
+#     assert np.unique(binary_img).size == 2, "binary_img must be binary"
 
-    ChangeMorphology(binary_img, 2, show=False)
+#     ChangeMorphology(binary_img, 2, show=False)
 
-    # label the image
-    labeled_img = label(binary_img)
+#     # label the image
+#     labeled_img = label(binary_img)
 
-    # get the area of each object
-    props = regionprops(labeled_img)
+#     # get the area of each object
+#     props = regionprops(labeled_img)
 
-    # get all areas
-    areas = [prop.area for prop in props]
+#     # get all areas
+#     areas = [prop.area for prop in props]
 
-    return np.array(areas)
+#     return np.array(areas)
 
 
 def GetSingleCellAreaAndIntensity(
@@ -64,9 +64,9 @@ def GetSingleCellAreaAndIntensity(
 
 def LocalCompetition(
     img_x: np.ndarray,
-    segmentation_x: np.ndarray,
+    binary_x: np.ndarray,
     img_y: np.ndarray,
-    segmentation_y: np.ndarray,
+    binary_y: np.ndarray,
     visualize: bool = False,
 ) -> Tuple[float, float, float, float]:
     """
@@ -81,12 +81,11 @@ def LocalCompetition(
     (this is a symmetric output, so X and Y can be swapped in the function but the result stays
     the same)
 
-    => look at the histograms of measurement and see how we can define a paramter on it
     """
 
     # get the mask of the area of interest
-    mask_x = segmentation_x > 0
-    mask_y = segmentation_y > 0
+    mask_x = binary_x > 0
+    mask_y = binary_y > 0
     overlap = mask_x * mask_y
 
     # total area of the mask
@@ -109,9 +108,9 @@ def LocalCompetition(
         % (area_competition_y_in_x * 100, (1 - area_competition_y_in_x) * 100)
     )
 
-    # now consider the competition in the overlap region to find out who has more to say there
+    # now consider the competition in the overlap region to find out who has more dominance there
 
-    # normalize intensity of the image
+    # normalize intensity of the image (based on something like the maximum intensity)
     norm_factor_x = GetNormalizationFactor(img_x)
     img_x = img_x / norm_factor_x
 
@@ -169,4 +168,6 @@ def LocalCompetition(
         area_competition_y_in_x,
         normalized_intensity_density_x,
         normalized_intensity_density_y,
+        intensity_density_x_total,
+        intensity_density_y_total,
     )
