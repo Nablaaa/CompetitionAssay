@@ -8,3 +8,4 @@ data_3D/*
 *.png
 *.csv
 competitionassay.egg-info/
+CompetitionAssay/scripts_that_are_unnecessary_for_paper/
