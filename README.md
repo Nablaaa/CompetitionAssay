@@ -60,9 +60,14 @@ conda activate competition_env
 
 Inside the activated environment, type:
 ```bash
+pip install competitionassay[interactive]
+```
+
+if you want to run noise2void on Colab and if you do not need napari for drawing GT yourself, then type:
+```bash
 pip install competitionassay
 ```
-to download all necessary dependencies. <br>
+the difference is, that the interactive version has n2v, tensorflow and napari installed. <br>
 If this does not work, please take a look at the [FAQ](#faq) section.
 
 
@@ -224,7 +229,7 @@ This script is not used in the paper, but it might help to define biofilms based
 Try to set up an empty conda environment with python 3.9. Then instead of using the pip install command, download the requirements_no_DL.txt file from the repository and type:
 ```bash
 conda activate competition_env
-conda install --file requirements_no_DL.txt
+conda install competitionassay
 ```
 Then continue running the scripts until they lead to errors like: No module named ... <br>
 Install these modules with:
