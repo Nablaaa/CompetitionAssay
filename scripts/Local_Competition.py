@@ -75,6 +75,8 @@ def main():
         list_area_Mutant_in_WT = []
         list_intensity_density_WT_in_Mutant = []
         list_intensity_density_Mutant_in_WT = []
+        list_intensity_density_WT_alone = []
+        list_intensity_density_Mutant_alone = []
         list_intensity_density_WT_general = []
         list_intensity_density_Mutant_general = []
 
@@ -106,6 +108,8 @@ def main():
                 area_competition_y_in_x,
                 normalized_intensity_density_x,
                 normalized_intensity_density_y,
+                normalized_intensity_density_x_alone,
+                normalized_intensity_density_y_alone,
                 normalized_intensity_density_x_total,
                 normalized_intensity_density_y_total,
             ) = quantification.LocalCompetition(
@@ -117,6 +121,8 @@ def main():
             list_area_Mutant_in_WT.append(area_competition_y_in_x)
             list_intensity_density_WT_in_Mutant.append(normalized_intensity_density_x)
             list_intensity_density_Mutant_in_WT.append(normalized_intensity_density_y)
+            list_intensity_density_WT_alone.append(normalized_intensity_density_x_alone)
+            list_intensity_density_Mutant_alone.append(normalized_intensity_density_y_alone)
             list_intensity_density_WT_general.append(normalized_intensity_density_x_total)
             list_intensity_density_Mutant_general.append(normalized_intensity_density_y_total)
 
@@ -126,10 +132,12 @@ def main():
                 "Name": repetition_name,
                 "area_WT_in_Mutant[per]": list_area_WT_in_Mutant,
                 "area_Mutant_in_WT[per]": list_area_Mutant_in_WT,
-                "Norm_intensity_density_WT_in_Mutant": list_intensity_density_WT_in_Mutant,
                 "Norm_intensity_density_WT_general": list_intensity_density_WT_general,
-                "Norm_intensity_density_Mutant_in_WT": list_intensity_density_Mutant_in_WT,
+                "Norm_intensity_density_WT_in_Mutant": list_intensity_density_WT_in_Mutant,
+                "Norm_intensity_density_WT_alone": list_intensity_density_WT_alone,
                 "Norm_intensity_density_Mutant_general": list_intensity_density_Mutant_general,
+                "Norm_intensity_density_Mutant_in_WT": list_intensity_density_Mutant_in_WT,
+                "Norm_intensity_density_Mutant_alone": list_intensity_density_Mutant_alone,
             }
         )
 
