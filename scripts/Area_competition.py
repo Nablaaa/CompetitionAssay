@@ -148,9 +148,10 @@ def main():
         all_single_areas_WT = np.concatenate([arr.flatten() for arr in all_single_areas_WT])
         all_single_areas_Mutant = np.concatenate([arr.flatten() for arr in all_single_areas_Mutant])
 
-        visualization.Plot_Area_Histogram_Overall(
+        fig = visualization.Plot_Area_Histogram_Overall(
             all_single_areas_WT, all_single_areas_Mutant, competition, output_dir, visualize=False
         )
+        fig.savefig(output_dir + "area_covered.png", dpi=500)
 
         # convert to numpy
         area_covered_WT = np.array(area_covered_WT)
