@@ -9,7 +9,7 @@ def parse_requirements(filename):
 
 
 # Use parse_requirements to get the list of requirements
-requirements = parse_requirements("necessary_requirements.txt")
+requirements = parse_requirements("requirements.txt")
 
 
 with open("README.md", "r", encoding="utf-8") as fh:
@@ -17,7 +17,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="competitionassay",
-    version="0.0.1",
+    version="0.0.2",
     author="Eric Schmidt",
     author_email="eric_schmidt_99@gmx.de",
     description="Software for the analysis of the competition assay data.",
