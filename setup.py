@@ -1,4 +1,16 @@
 import setuptools
+from setuptools import setup, find_packages
+
+
+# Function to parse requirements from requirements.txt file
+def parse_requirements(filename):
+    with open(filename, "r") as f:
+        return [line.strip() for line in f if not line.startswith("#")]
+
+
+# Use parse_requirements to get the list of requirements
+requirements = parse_requirements("requirements.txt")
+
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
@@ -18,11 +30,9 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     python_requires=">=3.9",
-    install_requires=[
-        "numpy",
-        "matplotlib",
-        "scikit-image",
-        "pandas",
-    ],
+    install_requires=requirements,
+    extras_require={
+        "interactive": ["tensorflow==2.12.0", "napari==0.4.18", "n2v==0.3.2"],
+    },
     include_package_data=True,
 )
