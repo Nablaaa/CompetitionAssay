@@ -18,24 +18,6 @@ def GetCoveredAreaPercent(binary_img: np.ndarray) -> float:
     return np.sum(binary_img) / (binary_img.shape[0] * binary_img.shape[1])
 
 
-# def GetSingleCellArea(binary_img: np.ndarray) -> np.ndarray:
-#     """Get the area of a single cell in a binary image"""
-#     assert np.unique(binary_img).size == 2, "binary_img must be binary"
-
-#     ChangeMorphology(binary_img, 2, show=False)
-
-#     # label the image
-#     labeled_img = label(binary_img)
-
-#     # get the area of each object
-#     props = regionprops(labeled_img)
-
-#     # get all areas
-#     areas = [prop.area for prop in props]
-
-#     return np.array(areas)
-
-
 def GetSingleCellAreaAndIntensity(
     binary_img: np.ndarray, intensity_img: np.ndarray
 ) -> Tuple[np.ndarray, np.ndarray]:
@@ -125,17 +107,24 @@ def LocalCompetition(
     normalized_intensity_density_x = np.sum(x_in_overlap) / overlapping_area
     normalized_intensity_density_y = np.sum(y_in_overlap) / overlapping_area
 
+    # get the intensity density in the region where there is mask_x but not mask_y
+    x_alone = mask_x * np.logical_not(mask_y)
+    normalized_intensity_density_x_alone = np.sum(img_x[x_alone]) / np.sum(x_alone)
+
+    y_alone = mask_y * np.logical_not(mask_x)
+    normalized_intensity_density_y_alone = np.sum(img_y[y_alone]) / np.sum(y_alone)
+
     # get the intensity density in the overall region
-    intensity_density_x_total = np.sum(img_x[mask_x]) / total_area_x
-    intensity_density_y_total = np.sum(img_y[mask_y]) / total_area_y
+    normalized_intensity_density_x_total = np.sum(img_x[mask_x]) / total_area_x
+    normalized_intensity_density_y_total = np.sum(img_y[mask_y]) / total_area_y
 
     print(
         "X has an intensity density of %.2f in the overlap region, Y has an intensity density of %.2f in the overlap region. For comparison: X has an intensity density of %.2f in the total region, Y has an intensity density of %.2f in the total region"
         % (
             normalized_intensity_density_x,
             normalized_intensity_density_y,
-            intensity_density_x_total,
-            intensity_density_y_total,
+            normalized_intensity_density_x_total,
+            normalized_intensity_density_y_total,
         )
     )
 
@@ -168,6 +157,8 @@ def LocalCompetition(
         area_competition_y_in_x,
         normalized_intensity_density_x,
         normalized_intensity_density_y,
-        intensity_density_x_total,
-        intensity_density_y_total,
+        normalized_intensity_density_x_alone,
+        normalized_intensity_density_y_alone,
+        normalized_intensity_density_x_total,
+        normalized_intensity_density_y_total,
     )
