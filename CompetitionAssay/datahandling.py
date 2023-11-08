@@ -11,22 +11,6 @@ import os
 from typing import List
 
 
-# def ReadData(folder, format="tif"):
-#     """Reads all files of a given format in a folder and returns a list of
-#     arrays. The format can be any of the formats supported by the Pillow
-#     library (e.g. 'tif', 'png', 'jpg', etc.)."""
-#     # Get all files in the folder
-#     files = os.listdir(folder)
-#     # Filter files by format
-#     files = [f for f in files if f.endswith(format)]
-#     # Read files
-#     data = []
-#     for f in files:
-#         img = Image.open(os.path.join(folder, f))
-#         data.append(np.array(img))
-#     return data
-
-
 def NormalizeImg(img):
     """Normalize img input by subtracting the mean
     and dividing by std"""
