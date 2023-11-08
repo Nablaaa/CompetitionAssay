@@ -9,7 +9,7 @@ def parse_requirements(filename):
 
 
 # Use parse_requirements to get the list of requirements
-requirements = parse_requirements("requirements.txt")
+requirements = parse_requirements("text/requirements.txt")
 
 
 with open("README.md", "r", encoding="utf-8") as fh:
@@ -20,7 +20,7 @@ setuptools.setup(
     version="0.0.3",
     author="Eric Schmidt",
     author_email="eric_schmidt_99@gmx.de",
-    description="Software for the analysis of the competition assay data.",
+    description="Software for the analysis of competition assay data.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/Nablaaa/CompetitionAssay",
