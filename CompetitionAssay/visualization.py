@@ -56,7 +56,7 @@ def Plot_Area_Histogram_Overall(
     max_value = np.max([all_single_areas_WT.max(), all_single_areas_Mutant.max()])
     bins = np.linspace(0, max_value, 100)
 
-    plt.figure()
+    fig, ax = plt.subplots(1, 1, figsize=(10, 10))
     hist1, bins1 = np.histogram(all_single_areas_WT, bins=bins)
     hist2, bins2 = np.histogram(all_single_areas_Mutant, bins=bins)
     hist1_log = np.log10(hist1)
@@ -73,8 +73,6 @@ def Plot_Area_Histogram_Overall(
     plt.xlabel("Area[px]")
     plt.ylabel("log10(Count) + 1")
     plt.title("Histogram of single cell areas")
-    plt.savefig(output_dir + "area_distribution_" + competition[:-1] + ".png", dpi=500)
-    plt.savefig(output_dir + "area_distribution_" + competition[:-1] + ".pdf", dpi=500)
 
     if visualize:
         plt.show()
@@ -82,7 +80,7 @@ def Plot_Area_Histogram_Overall(
     else:
         plt.close()
 
-    print("Histogram saved to: " + output_dir + "area_distribution_" + competition[:-1] + ".png")
+    return fig
 
 
 def OverlaySegmentationMulticlass(img1, segmentation1, img2, segmentation2):
@@ -173,27 +171,6 @@ def OverlaySegmentation(img1, segmentation1, img2, segmentation2):
     ax[1].set_title("Mutant")
 
     return ax, fig
-
-
-def VisualizeSegmentation(intensity_img, binary_img, df):
-    # visualize the image and scatter plot of area vs mean intensity
-    fig = plt.figure(figsize=(15, 5))
-    ax1 = plt.subplot(1, 3, 1)
-    ax1.imshow(intensity_img)
-    ax1.set_title("intensity_img")
-
-    ax2 = plt.subplot(1, 3, 2, sharex=ax1, sharey=ax1)
-    ax2.imshow(binary_img)
-    ax2.set_title("binary_img")
-
-    ax3 = plt.subplot(1, 3, 3)
-    ax3.scatter(df["area"], df["mean_intensity"])
-    ax3.set_title("area vs mean_intensity")
-    ax3.set_xlabel("area")
-    ax3.set_ylabel("mean_intensity")
-
-    plt.savefig("Segmentation/mutant1.png", dpi=500)
-    plt.show()
 
 
 def Plot_Biofilm_Identification(WT_intensity, Mutant_intensity, WT_area, Mutant_area):
