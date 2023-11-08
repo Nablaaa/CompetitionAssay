@@ -60,14 +60,14 @@ conda activate competition_env
 
 Inside the activated environment, type:
 ```bash
-pip install competitionassay[interactive]
+pip install competitionassay[all]
 ```
 
 if you want to run noise2void on Colab and if you do not need napari for drawing GT yourself, then type:
 ```bash
 pip install competitionassay
 ```
-the difference is, that the interactive version has n2v, tensorflow and napari installed. <br>
+the difference is, that the "all" version has n2v, tensorflow and napari installed. <br>
 If this does not work, please take a look at the [FAQ](#faq) section.
 
 
