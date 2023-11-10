@@ -66,6 +66,46 @@ def GetTranswellData(base_dir, competition, files_are_in):
     WT_files.sort()
     Mutant_files.sort()
 
+    # check if a log.txt exists in the base directory
+    mode = "w"
+    if os.path.exists(base_dir + "log.txt"):
+        mode = "a"
+
+    # get a time stamp
+    import datetime
+
+    # if the files are empty, write a log into the base directory
+    if len(WT_files) == 0:
+        now = datetime.datetime.now()
+        now = now.strftime("%Y-%m-%d %H:%M:%S")
+
+        with open(base_dir + "log.txt", mode) as f:
+            f.write(
+                now
+                + "\n"
+                + "No files with the name <WT_> in the beginning found in the folder: "
+                + base_dir
+                + competition
+                + files_are_in
+                # add a new line
+                + "\n"
+            )
+    # if the Mutant files are empty, write a log into the base directory
+    # make sure to now overwrite the log
+    elif len(Mutant_files) == 0:
+        now = datetime.datetime.now()
+        now = now.strftime("%Y-%m-%d %H:%M:%S")
+        with open(base_dir + "log.txt", mode) as f:
+            f.write(
+                now
+                + "\n"
+                + "No files with NOT the name <WT_> found in the folder: "
+                + base_dir
+                + competition
+                + files_are_in
+                + "\n"
+            )
+
     return WT_files, Mutant_files
 
 
@@ -101,3 +141,18 @@ def MakeSameSizeArray(arr_list: List[np.ndarray]) -> List[np.ndarray]:
         new_arr_list.append(new_arr)
 
     return new_arr_list
+
+
+def GetCompetitionFolders(base_dir):
+    """
+    This function returns all folders in the base_dir that contain the
+    competition data.
+    """
+    subdirectories = [
+        d
+        for d in os.listdir(base_dir)
+        if os.path.isdir(os.path.join(base_dir, d)) and not d.startswith(".")
+    ]
+    subdirectories.sort()
+
+    return subdirectories
