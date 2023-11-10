@@ -12,7 +12,7 @@ Later it will be integrated in a workflow (Quantification_transwell.py)
 
 import os
 from skimage.io import imread, imsave
-from CompetitionAssay.datahandling import GetTranswellData
+from CompetitionAssay.datahandling import GetTranswellData, GetCompetitionFolders
 from CompetitionAssay.binarization import myRFC, RemoveSmallObjects
 
 
@@ -31,7 +31,7 @@ def main():
     # objects have to be at least 49 objects (e.g. 7x7) large
     min_size = 49  # pixels
 
-    perform_denoising = False
+    perform_denoising = True
     if perform_denoising:
         from CompetitionAssay.denoising import n2vDenoising
 
@@ -42,7 +42,7 @@ def main():
         myModel = n2vDenoising(model_name=model_name, model_dir=model_dir)
 
     # get all the files in the directory
-    different_competitions_folders = os.listdir(base_dir)
+    different_competitions_folders = GetCompetitionFolders(base_dir)
 
     for competition in different_competitions_folders:
         output_dir_binary = base_dir + competition + files_are_in + "binary/"

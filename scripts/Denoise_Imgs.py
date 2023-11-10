@@ -8,7 +8,7 @@ The training of the model is done in the google colab notebook.
 import os
 from skimage.io import imread, imsave
 from CompetitionAssay.denoising import n2vDenoising
-from CompetitionAssay.datahandling import GetTranswellData
+from CompetitionAssay.datahandling import GetTranswellData, GetCompetitionFolders
 
 
 def main():
@@ -23,7 +23,7 @@ def main():
     myModel = n2vDenoising(model_name=model_name, model_dir=model_dir)
 
     # get all the files in the directory
-    different_competitions_folders = os.listdir(base_dir)
+    different_competitions_folders = GetCompetitionFolders(base_dir)
 
     for competition in different_competitions_folders:
         output_dir_denoised = base_dir + competition + files_are_in + "denoised/"

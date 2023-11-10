@@ -9,7 +9,7 @@ Results seem to make sense with respect to images
 
 import os
 from skimage.io import imread
-from CompetitionAssay.datahandling import GetTranswellData
+from CompetitionAssay.datahandling import GetTranswellData, GetCompetitionFolders
 from CompetitionAssay.quantification import GetSingleCellAreaAndIntensity
 from CompetitionAssay.visualization import Plot_Biofilm_Identification
 
@@ -20,7 +20,7 @@ def main():
     files_are_in = "/TW_growth/"
 
     # get all the files in the directory
-    different_competitions_folders = os.listdir(base_dir)
+    different_competitions_folders = GetCompetitionFolders(base_dir)
 
     for competition in different_competitions_folders:
         # output directory
@@ -35,9 +35,13 @@ def main():
         WT_binary, Mutant_binary = GetTranswellData(base_dir, competition, files_are_in + "binary/")
 
         assert len(WT_files) == len(Mutant_files), "WT and Mutant files must have the same length"
-        assert len(WT_binary) == len(Mutant_binary), "WT and Mutant binary files must have the same length"
+        assert len(WT_binary) == len(
+            Mutant_binary
+        ), "WT and Mutant binary files must have the same length"
         assert WT_files == WT_binary, "WT and WT binary files must have the same name"
-        assert Mutant_files == Mutant_binary, "Mutant and Mutant binary files must have the same name"
+        assert (
+            Mutant_files == Mutant_binary
+        ), "Mutant and Mutant binary files must have the same name"
 
         # go through all the files
         for WT_file, Mutant_file, WT_binary_file, Mutant_binary_file in zip(
@@ -60,11 +64,9 @@ def main():
             _, fig = Plot_Biofilm_Identification(
                 WT_intensity, Mutant_intensity, WT_area, Mutant_area
             )
-                
+
             fig.savefig(output_dir + WT_file[:-4] + "_intensity_vs_area.png", dpi=500)
             del fig
-
-
 
 
 if __name__ == "__main__":

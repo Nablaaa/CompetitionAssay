@@ -21,7 +21,7 @@ def main():
     files_are_in = "/TW_growth/"
 
     # get all the files in the directory
-    different_competitions_folders = os.listdir(base_dir)
+    different_competitions_folders = datahandling.GetCompetitionFolders(base_dir)
 
     for competition in different_competitions_folders:
         # output directory
