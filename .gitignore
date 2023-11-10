@@ -10,3 +10,9 @@ competitionassay.egg-info/
 CompetitionAssay/scripts_that_are_unnecessary_for_paper/
 models/RFC_3D_not_for_paper/
 .vscode/
+build/
+*.pdf
+*log.txt
+dist/
+methods_paper/
+example_data/competitions/*
