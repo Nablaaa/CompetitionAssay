@@ -7,8 +7,9 @@ This repository contains scripts to analyze competition assays. The scripts are 
 
 TODOS:
 
-
-- merge to main branch
+- fix issues for mac
+    - pip install competitionassay/[all/] did not work
+    - hidden files .DS were annoying - filter them out
 
 - write the test files for the scripts
 
