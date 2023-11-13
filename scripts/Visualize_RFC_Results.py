@@ -17,7 +17,7 @@ from CompetitionAssay import datahandling, visualization
 def main():
     # define base directory
     base_dir = "example_data/competitions/"
-    files_are_in = "TW_growth/"
+    files_are_in = "/TW_growth/"
 
     different_competitions_folders = datahandling.GetCompetitionFolders(base_dir)
 
