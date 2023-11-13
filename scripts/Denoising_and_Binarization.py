@@ -28,8 +28,8 @@ def main():
         "models/RandomForestClassifier_transwell/transwell_denoised_2_categories_Mutant.pkl"
     )
 
-    # objects have to be at least 49 objects (e.g. 7x7) large
-    min_size = 49  # pixels
+    # objects have to be at least 30 objects (e.g. 5x6) large
+    min_size = 30  # pixels
 
     perform_denoising = True
     if perform_denoising:
