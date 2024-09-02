@@ -12,7 +12,7 @@ easily click through them
 import os
 from skimage.io import imread
 from CompetitionAssay import datahandling, visualization
-
+import matplotlib.pyplot as plt
 
 def main():
     # define base directory
@@ -22,6 +22,7 @@ def main():
     different_competitions_folders = datahandling.GetCompetitionFolders(base_dir)
 
     for competition in different_competitions_folders:
+        print(competition)
         # output directory
         output_dir = base_dir + competition + files_are_in + "RFC_output/"
 
@@ -53,6 +54,13 @@ def main():
             repetition_name = WT_file[-12:-4]
 
             merged_plot.savefig(output_dir + repetition_name + "_visualization.png", dpi=300)
+
+            # close figure
+            plt.close('all')
+
+            del ax
+            del merged_plot
+            del WT_binary, Mutant_binary, WT_img, Mutant_img
 
 
 if __name__ == "__main__":
