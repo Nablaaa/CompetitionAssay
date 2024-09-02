@@ -5,32 +5,6 @@
 This repository contains scripts to analyze competition assays. The scripts are used by the paper: ... <br>
 
 
-TODOS:
-
-- fix issues for mac
-    - pip install competitionassay/[all/] did not work
-    - hidden files .DS were annoying - filter them out
-
-- write the test files for the scripts
-
-- local competition.py     => look at the histograms and see how we can define a paramter based on the data (e.g. the dominance parameter how dominant a certain species is in its area, or something like a "freedom" parameter that describes in how much area there is no competition expected)
-
-- create an environment.yml file for: conda env create -f environment.yml
-
-
-
-- find a better way to get the repetition name inside the script Area_competition.py at the moment it is very ugly:
-```python
-repetition_name = [WT_binary[i][-12:-4] for i in range(len(WT_binary))]
-```
-
-- Area_competition: for b and c corresponding csv files
-- biofilm identification: normalize with the intensity of a single cell, if segmentation is able to detect single cells
-- local competition:
-    - subtract background intensity first (based on 2-class classification) 
-    - as a better intensity parameter: compare ratios between mutant and WT intensity instead of the absolute (normalized) value as it is right now. Then compare these ratios with the ones from the distinct area (only X or only Y), to have a baseline
-***
-
 ## Table of Contents
 1. [Introduction](#introduction)
 2. [Installation](#installation)
@@ -119,7 +93,8 @@ python3 scripts/...
 ### Step 1 - Denoising
 The first part is denoising using **noise2void** ([GitHub](https://github.com/juglab/n2v), [paper](https://arxiv.org/abs/1811.10980)). This can be done on your machine with the Denoise_Imgs.py script, but also on Google Colab with the example script "noise2void_prediction.ipynb". The advantage of Google Colab is that you do not need to install tensorflow on your computer and you can use the GPU of Google Colab for the denoising. The disadvantage is that you need to upload your data to Google Drive and download it again after the denoising.
 
-For making the predictions, it is necessary to load the pretrained model. This can be found under the following link: TODO: [add here a link to the model - responsibility of the lab]
+For making the predictions, it is necessary to load the pretrained model. This can be found under the following link: <br>
+`TODO: [add here a link to the model - responsibility of the lab]`
 
 The denoised files are automatically saved in a folder together with your files. The folder is called "denoised".
 
