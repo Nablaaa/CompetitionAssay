@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="competitionassay",
-    version="0.0.1",
+    version="0.0.6",
     author="Eric Schmidt",
     author_email="eric_schmidt_99@gmx.de",
     description="Software for the analysis of the competition assay data.",
