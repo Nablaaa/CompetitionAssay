@@ -1,8 +1,8 @@
 # Competition Assay
-
+[![DOI](https://zenodo.org/badge/655598479.svg)](https://zenodo.org/doi/10.5281/zenodo.13730629)
 
 ## Introduction
-This repository contains scripts to analyze competition assays. The scripts are used by the paper: `Pseudomonas aeruginosa faces a fitness trade-off between mucosal colonization and antibiotic tolerance during airway infections` <br>
+This repository contains scripts to analyze competition assays. The scripts are used by the paper: `Pseudomonas aeruginosa faces a fitness trade-off between mucosal colonization and antibiotic tolerance during airway infections` (2024) <br>
 
 ***
 
