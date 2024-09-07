@@ -2,7 +2,7 @@
 
 
 ## Introduction
-This repository contains scripts to analyze competition assays. The scripts are used by the paper: ... <br>
+This repository contains scripts to analyze competition assays. The scripts are used by the paper: `Pseudomonas aeruginosa faces a fitness trade-off between mucosal colonization and antibiotic tolerance during airway infections` <br>
 
 
 ## Table of Contents
