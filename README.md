@@ -224,7 +224,7 @@ This script is not used in the paper, but it might help to define biofilms based
 Try to set up an empty conda environment with python 3.9. Then instead of using the pip install command, download the requirements_no_DL.txt file from the repository and type:
 ```bash
 conda activate competition_env
-conda install --file requirements_no_DL.txt
+conda install --file requirements_no_tf_no_napari.txt
 ```
 Then continue running the scripts until they lead to errors like: No module named ... <br>
 Install these modules with:
