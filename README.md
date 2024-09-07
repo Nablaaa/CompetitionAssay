@@ -2,32 +2,8 @@
 
 
 ## Introduction
-This repository contains scripts to analyze competition assays. The scripts are used by the paper: ... <br>
+This repository contains scripts to analyze competition assays. The scripts are used by the paper: `Pseudomonas aeruginosa faces a fitness trade-off between mucosal colonization and antibiotic tolerance during airway infections` <br>
 
-
-TODOS:
-
-
-- merge to main branch
-
-- write the test files for the scripts
-
-- local competition.py     => look at the histograms and see how we can define a paramter based on the data (e.g. the dominance parameter how dominant a certain species is in its area, or something like a "freedom" parameter that describes in how much area there is no competition expected)
-
-- create an environment.yml file for: conda env create -f environment.yml
-
-
-
-- find a better way to get the repetition name inside the script Area_competition.py at the moment it is very ugly:
-```python
-repetition_name = [WT_binary[i][-12:-4] for i in range(len(WT_binary))]
-```
-
-- Area_competition: for b and c corresponding csv files
-- biofilm identification: normalize with the intensity of a single cell, if segmentation is able to detect single cells
-- local competition:
-    - subtract background intensity first (based on 2-class classification) 
-    - as a better intensity parameter: compare ratios between mutant and WT intensity instead of the absolute (normalized) value as it is right now. Then compare these ratios with the ones from the distinct area (only X or only Y), to have a baseline
 ***
 
 ## Table of Contents
