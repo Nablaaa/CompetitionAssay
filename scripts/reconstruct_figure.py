@@ -97,7 +97,7 @@ def main():
 
     plt.legend()
     plt.xscale("log")
-    plt.xlim(8, 1e3)
+    plt.xlim(8, 5*1e4)
     plt.grid()
     plt.show()
 
